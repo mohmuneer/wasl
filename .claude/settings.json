@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash('c:\\\\xampp\\\\php\\\\php.exe' -r ' *)",
+      "Bash(\"c:\\\\xampp\\\\php\\\\php.exe\" -l \"c:\\\\xampp\\\\htdocs\\\\UltimatesolutionsCrm\\\\admin\\\\pages\\\\forms\\\\functions.php\")",
+      "PowerShell(& \"c:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root -e \"DESCRIBE dms_document_approvals; DESCRIBE dms_employees;\" UltimatesolutionsCrm 2>&1)"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+    "require": {
+        "setasign/fpdi-fpdf": "2.3",
+        "ezyang/htmlpurifier": "^4.19",
+        "mpdf/mpdf": "^8.3"
+    }
+}

@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/xampp/**)",
+      "Bash(mysql/bin/mysql -u root -e \"SELECT COUNT\\(*\\) as total FROM wasl.user_menu_access;\")",
+      "Bash(mysql/bin/mysql -u root -e \"SELECT COUNT\\(*\\) as user2_access FROM wasl.user_menu_access WHERE user_id = 2 AND can_view = 1;\")",
+      "Bash(mysql/bin/mysql -u root -e \"SELECT * FROM wasl.sys_theme LIMIT 1;\")",
+      "Bash(mysql/bin/mysql -u root -e \"SELECT system_name, system_logo FROM wasl.sys_settings LIMIT 1;\")",
+      "PowerShell(php -r \"echo 'zlib: '.\\(extension_loaded\\('zlib'\\) ? 'YES' : 'NO'\\).PHP_EOL; echo 'gd: '.\\(extension_loaded\\('gd'\\) ? 'YES' : 'NO'\\).PHP_EOL;\" 2>$null)",
+      "Bash(php -r ' *)",
+      "Bash(php -r 'require '\\\\''config/db.php'\\\\''; $t=$pdo->query\\('\\\\''SHOW TABLES'\\\\''\\)->fetchAll\\(PDO::FETCH_COLUMN\\); echo implode\\('\\\\'', '\\\\'',$t\\);')",
+      "Bash(mysql -u root -e \"SHOW TABLES FROM wasl;\")",
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root -e \"SHOW TABLES FROM wasl;\" 2>$null)",
+      "Bash(\"/c/xampp/mysql/bin/mysql.exe\" -u root wasl)",
+      "Bash(\"/c/xampp/mysql/bin/mysql.exe\" -u root wasl -e \"SHOW TABLES LIKE 'kb_%'; SELECT * FROM kb_categories;\")",
+      "Bash(php -l admin/pages/tables/show-kb.php)",
+      "Bash(php -l admin/pages/forms/add-kb-article.php)",
+      "Bash(php -l admin/pages/forms/edit-kb-article.php)",
+      "Bash(php -l admin/pages/forms/view-kb-article.php)",
+      "Bash(/c/composer/composer require *)",
+      "Bash(grep -n '$content\\\\s*=\\\\|$description\\\\s*=' /c/xampp/htdocs/UltimatesolutionsCrm/admin/pages/forms/add-kb-article.php)",
+      "Bash(grep -n '$content\\\\s*=\\\\|$description\\\\s*=' /c/xampp/htdocs/UltimatesolutionsCrm/admin/pages/forms/edit-kb-article.php)",
+      "Bash(grep -n '$description\\\\s*=' /c/xampp/htdocs/UltimatesolutionsCrm/admin/pages/forms/add-document.php)",
+      "Bash(grep -n '$description\\\\s*=' /c/xampp/htdocs/UltimatesolutionsCrm/admin/pages/forms/edit-document.php)",
+      "Bash(grep -n 'UPLOAD_ERR_OK\\\\|move_uploaded_file\\\\|$file\\\\['\\\\''error'\\\\''\\\\]\\\\|$_FILES' /c/xampp/htdocs/UltimatesolutionsCrm/admin/pages/forms/add-document.php)",
+      "Bash(grep -n 'UPLOAD_ERR_OK\\\\|move_uploaded_file\\\\|$_FILES\\\\[' /c/xampp/htdocs/UltimatesolutionsCrm/admin/pages/forms/edit-document.php)",
+      "Bash(php -l admin/pages/tables/show-employees.php)",
+      "Bash(php -l admin/pages/tables/show-settings.php)",
+      "Bash(php -l admin/send_message.php)",
+      "Bash(php -r 'require '\\\\''/c/xampp/htdocs/UltimatesolutionsCrm/vendor/autoload.php'\\\\''; $m = new \\\\Mpdf\\\\Mpdf\\(\\); echo '\\\\''mPDF OK'\\\\'';')",
+      "Bash(xargs grep -l \"custom\\\\.css?v=202606250922\")",
+      "Bash(php docs/generate_visual_guide.php)",
+      "Bash(gh --version)",
+      "Bash(gh auth *)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git config *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

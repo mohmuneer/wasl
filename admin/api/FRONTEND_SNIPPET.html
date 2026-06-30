@@ -1,0 +1,131 @@
+<!-- ============================================================
+     استبدل قسم <script> الأخير في add-cstmr.php بهذا الكود.
+     احتفظ بمكتبات jQuery و Bootstrap و Cropper.js كما هي،
+     واحذف سطر تحميل Tesseract.js التالي (لم نعد نحتاجه):
+       <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/..."></script>
+     ============================================================ -->
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script src="../../dist/js/adminlte.min.js"></script>
+
+<script>
+let cropper;
+const imageElement = document.getElementById('image-to-crop');
+
+// رابط الـ API (عدّله إن اختلف مسار مشروعك)
+const OCR_API_URL = '../../api/cr_ocr_api.php';
+
+// ---------- اختيار الملف ----------
+function handleFileSelect(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        // PDF يُرسل مباشرة للخادم (لا يحتاج قص)
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+            sendToApi(file);
+        } else {
+            startCropping(file); // الصور تمرّ بواجهة القص
+        }
+    }
+}
+
+// ---------- اللصق (Ctrl+V) ----------
+document.addEventListener('paste', e => {
+    const item = Array.from(e.clipboardData.items).find(x => x.kind === 'file');
+    if (item) startCropping(item.getAsFile());
+});
+
+// ---------- واجهة القص ----------
+function startCropping(file) {
+    if (cropper) { cropper.destroy(); cropper = null; }
+    imageElement.src = '';
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imageElement.src = e.target.result;
+        $('#cropModal').modal('show');
+    };
+    reader.readAsDataURL(file);
+}
+
+$('#cropModal').on('shown.bs.modal', function () {
+    cropper = new Cropper(imageElement, {
+        viewMode: 2, dragMode: 'move', autoCropArea: 0.9,
+        checkOrientation: true, responsive: true
+    });
+}).on('hidden.bs.modal', function () {
+    if (cropper) { cropper.destroy(); cropper = null; }
+    imageElement.src = '';
+});
+
+// ---------- القص ثم الإرسال للـ API ----------
+document.getElementById('crop-button').addEventListener('click', function () {
+    if (!cropper) return;
+    const canvas = cropper.getCroppedCanvas({
+        width: 1500, imageSmoothingQuality: 'high'
+    });
+    $('#cropModal').modal('hide');
+    canvas.toBlob((blob) => {
+        if (blob) sendToApi(blob, 'cropped.jpg');
+    }, 'image/jpeg', 0.95);
+});
+
+// ---------- إرسال الملف للـ API الخادمي ----------
+async function sendToApi(fileOrBlob, filename) {
+    const status = document.getElementById('upload-status');
+    status.innerHTML = '<i class="fas fa-sync fa-spin text-primary"></i> جاري التحليل في الخادم...';
+
+    const formData = new FormData();
+    formData.append('file', fileOrBlob, filename || fileOrBlob.name || 'upload');
+
+    try {
+        const res = await fetch(OCR_API_URL, { method: 'POST', body: formData });
+        const json = await res.json();
+
+        if (!json.success) {
+            status.innerHTML = '<span class="text-danger">' + (json.message || 'فشل التحليل') + '</span>';
+            return;
+        }
+
+        fillForm(json.data);
+
+        const src = json.source === 'pdf-text' ? 'PDF أصلي (دقة عالية)'
+                  : json.source === 'pdf-ocr'  ? 'PDF ممسوح (OCR)'
+                  : 'صورة (OCR)';
+        status.innerHTML = '<span class="text-success font-weight-bold">اكتمل الاستخراج بنجاح ('
+                         + src + ')! راجع البيانات قبل الحفظ.</span>';
+    } catch (err) {
+        status.innerHTML = '<span class="text-danger">تعذّر الاتصال بالخادم. تأكد من مسار الـ API.</span>';
+        console.error(err);
+    }
+}
+
+// ---------- تعبئة الفورم من بيانات الـ API ----------
+function fillForm(data) {
+    // خريطة: مفتاح الـ API ← اسم الحقل في الفورم (name أو id)
+    const setByName = (name, val) => {
+        if (val == null || val === '') return;
+        const el = document.getElementsByName(name)[0];
+        if (el) el.value = val;
+    };
+    const setById = (id, val) => {
+        if (val == null || val === '') return;
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    };
+
+    setByName('customer_name', data.customer_name);
+    setById('customer_type',   data.customer_type);   // id في فورمك
+    setById('cr_status',       data.cr_status);        // id
+    setByName('national_id',   data.national_id);
+    setById('cr_number',       data.cr_number);        // id
+    setById('cr_date',         data.cr_date);          // id
+    setByName('cr_expiry_g',   data.cr_expiry_g);
+    setByName('capital',       data.capital);
+    setByName('address',       data.address);
+    setByName('owner_name',    data.owner_name);
+    setByName('owner_id',      data.owner_id);
+    setByName('phone',         data.phone);
+    setByName('email',         data.email);
+}
+</script>

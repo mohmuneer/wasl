@@ -1,0 +1,15 @@
+Options -Indexes
+
+# توجيه جميع طلبات API إلى index.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?endpoint=$1 [QSA,L]
+
+# منع الوصول المباشر لملفات الـ Core والـ endpoints
+RewriteRule ^Core/        - [F,L]
+RewriteRule ^endpoints/   - [F,L]
+
+# Security Headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "DENY"
+Header set X-XSS-Protection "1; mode=block"

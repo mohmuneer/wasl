@@ -1,0 +1,28 @@
+# Dependencies (installed via composer during deploy)
+/vendor/
+
+# Runtime / cache
+/storage/cache/*
+!/storage/cache/.htaccess
+/storage/purifier_cache/*
+
+# User-uploaded / runtime content (already live on the server)
+/uploads/*
+!/uploads/.htaccess
+!/uploads/chat/.htaccess
+!/uploads/signatures/.htaccess
+/admin/uploads/*
+
+# Archived documents (already live on the server)
+/archive/*
+!/archive/index.html
+
+# Local backups / scratch
+/_encoding_backup/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Claude Code local session config
+/.claude/
