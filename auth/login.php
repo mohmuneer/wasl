@@ -150,7 +150,12 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
         .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(13,74,28,.35)}
         .btn-login:disabled{opacity:.5;cursor:not-allowed;transform:none}
         .form-footer{text-align:center;margin-top:22px;font-size:.8rem;color:#bbb}
-        @media(max-width:700px){.login-brand{display:none}.login-form-side{width:100%;padding:40px 22px}}
+        /* mobile-first: single column by default */
+        .login-brand{display:none}
+        .login-form-side{width:100%;padding:40px 22px}
+
+        /* two-column layout only on wider screens */
+        @media(min-width:701px){.login-brand{display:flex}.login-form-side{width:400px;padding:50px 40px}}
     </style>
 </head>
 <body>

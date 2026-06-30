@@ -384,15 +384,14 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
             color: #bbb
         }
 
-        @media(max-width:700px) {
-            .login-brand {
-                display: none
-            }
+        /* mobile-first: single column by default */
+        .login-brand { display: none }
+        .login-form-side { width: 100%; padding: 40px 22px }
 
-            .login-form-side {
-                width: 100%;
-                padding: 40px 22px
-            }
+        /* two-column layout only on wider screens */
+        @media(min-width:701px) {
+            .login-brand { display: flex }
+            .login-form-side { width: 400px; padding: 50px 40px }
         }
     </style>
 </head>
