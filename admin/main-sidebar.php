@@ -3,7 +3,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$base_url = '/UltimatesolutionsCrm/admin/';
+$base_url = (isset($_SERVER['SERVER_NAME']) && str_ends_with($_SERVER['SERVER_NAME'], '.wuaze.com'))
+    ? '/admin/'
+    : '/UltimatesolutionsCrm/admin/';
 $current_page = basename($_SERVER['PHP_SELF']);
 $logged_user_id = $_SESSION['user_id'] ?? 0;
 $role_code = $_SESSION['role_code'] ?? '';
@@ -58,10 +60,13 @@ if ($is_protected) {
 
 // 5. جلب وصيانة مسار صورة المستخدم (تم دمج المنطق وتصحيحه)
 $userImg = $_SESSION['file_path'] ?? '';
-$uploads_dir = $_SERVER['DOCUMENT_ROOT'] . "/UltimatesolutionsCrm/uploads/"; // التأكد من المسار الصحيح للمجلد
+$uploads_web_path = (isset($_SERVER['SERVER_NAME']) && str_ends_with($_SERVER['SERVER_NAME'], '.wuaze.com'))
+    ? '/uploads/'
+    : '/UltimatesolutionsCrm/uploads/';
+$uploads_dir = $_SERVER['DOCUMENT_ROOT'] . $uploads_web_path;
 
 if (!empty($userImg) && file_exists($uploads_dir . $userImg)) {
-    $fullImagePath = "/UltimatesolutionsCrm/uploads/" . $userImg;
+    $fullImagePath = $uploads_web_path . $userImg;
 } else {
     $fullImagePath = $base_url . "dist/img/avatar5.png";
 }

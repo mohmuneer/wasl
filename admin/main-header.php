@@ -9,7 +9,9 @@ $userImg  = $_SESSION['file_path'] ?? '';
 
 // 2. إعداد المسارات بشكل مرن
 // استخدم مسارات نسبية داخل الموقع لضمان عمل الروابط
-$web_base = "/UltimatesolutionsCrm/admin/";
+$web_base = (isset($_SERVER['SERVER_NAME']) && str_ends_with($_SERVER['SERVER_NAME'], '.wuaze.com'))
+    ? "/admin/"
+    : "/UltimatesolutionsCrm/admin/";
 $webUploadsDir = "/uploads/";
 
 // 3. التحقق من الصورة باستخدام المسار الفيزيائي للسيرفر
@@ -465,10 +467,10 @@ td .btn.btn-primary, .btn-group-action .btn-primary  { background: <?= htmlspeci
             <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/UltimatesolutionsCrm/admin/index.php" class="nav-link">الرئيسية</a>
+            <a href="<?= $web_base ?>index.php" class="nav-link">الرئيسية</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="/UltimatesolutionsCrm/admin/contact.php" class="nav-link">المحادثة</a>
+            <a href="<?= $web_base ?>contact.php" class="nav-link">المحادثة</a>
         </li>
         <li class="nav-item d-none d-md-inline-block">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button" id="fullscreen-btn">
@@ -505,7 +507,7 @@ td .btn.btn-primary, .btn-group-action .btn-primary  { background: <?= htmlspeci
 
                 <?php if (count($latest_messages) > 0): ?>
                 <?php foreach ($latest_messages as $msg): ?>
-                <a href="/UltimatesolutionsCrm/admin/contact.php?user_id=<?php echo $msg['sender_id']; ?>"
+                <a href="<?= $web_base ?>contact.php?user_id=<?php echo $msg['sender_id']; ?>"
                     class="dropdown-item">
                     <div class="media align-items-center">
                         <!-- عرض إجمالي رسائل هذا المستخدم في دائرة ملونة -->
@@ -539,7 +541,7 @@ td .btn.btn-primary, .btn-group-action .btn-primary  { background: <?= htmlspeci
                 <p class="text-center p-3 mb-0 text-muted">لا توجد محادثات</p>
                 <?php endif; ?>
 
-                <a href="/UltimatesolutionsCrm/admin/contact.php" class="dropdown-item dropdown-footer">عرض جميع
+                <a href="<?= $web_base ?>contact.php" class="dropdown-item dropdown-footer">عرض جميع
                     الرسائل</a>
             </div>
         </li>
@@ -580,7 +582,7 @@ td .btn.btn-primary, .btn-group-action .btn-primary  { background: <?= htmlspeci
                                 break;
                         }
                     ?>
-                <a href="/UltimatesolutionsCrm/admin/pages/forms/view-request.php?id=<?php echo $req['id']; ?>"
+                <a href="<?= $web_base ?>pages/forms/view-request.php?id=<?php echo $req['id']; ?>"
                     class="dropdown-item">
                     <div class="media align-items-center">
                         <i class="fas fa-exclamation-circle mr-2 <?php echo $priority_color; ?>"
@@ -602,7 +604,7 @@ td .btn.btn-primary, .btn-group-action .btn-primary  { background: <?= htmlspeci
                 <a href="#" class="dropdown-item text-center">لا توجد بلاغات حالياً</a>
                 <?php endif; ?>
 
-                <a href="/UltimatesolutionsCrm/admin/pages/tables/show-requests.php"
+                <a href="<?= $web_base ?>pages/tables/show-requests.php"
                     class="dropdown-item dropdown-footer">عرض كافة
                     البلاغات</a>
             </div>
@@ -610,7 +612,7 @@ td .btn.btn-primary, .btn-group-action .btn-primary  { background: <?= htmlspeci
 
         <!-- اسم المستخدم -->
         <li class="nav-item d-none d-md-inline-block">
-            <a href="/UltimatesolutionsCrm/admin/pages/forms/profile.php" class="nav-link" title="الملف الشخصي"
+            <a href="<?= $web_base ?>pages/forms/profile.php" class="nav-link" title="الملف الشخصي"
                 style="display:flex; align-items:center; gap:7px;">
                 <img src="<?= $fullImagePath ?>" alt="avatar"
                     style="width:28px; height:28px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.4);">
@@ -619,7 +621,7 @@ td .btn.btn-primary, .btn-group-action .btn-primary  { background: <?= htmlspeci
         </li>
         <!-- زر تسجيل الخروج -->
         <li class="nav-item">
-            <a class="nav-link text-danger" href="/UltimatesolutionsCrm/admin/logout.php" id="logout-link"
+            <a class="nav-link text-danger" href="<?= $web_base ?>logout.php" id="logout-link"
                 title="تسجيل الخروج">
                 <i class="fas fa-sign-out-alt"></i>
             </a>
@@ -706,14 +708,14 @@ document.getElementById('logout-link').addEventListener('click', function(e) {
         reverseButtons: true // لجعل الأزرار مناسبة للغة العربية
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "/UltimatesolutionsCrm/admin/logout.php";
+            window.location.href = "<?= $web_base ?>logout.php";
         }
     });
 });
 
 function updateUnreadCount() {
     // مسار مطلق لتجنب 404 من الصفحات المتداخلة
-    $.get("/UltimatesolutionsCrm/admin/get_unread_count.php", function(data) {
+    $.get("<?= $web_base ?>get_unread_count.php", function(data) {
         // الملف يُعيد JSON: {"total": X} أو {"count": X}
         var count = 0;
         if (typeof data === 'object') {
