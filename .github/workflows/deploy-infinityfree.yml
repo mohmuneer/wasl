@@ -21,6 +21,12 @@ jobs:
       - name: Install Composer dependencies (no dev, optimized)
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
+      - name: Reset deploy state (force full re-sync, no deletions)
+        run: |
+          curl -s --ftp-pasv -u "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" \
+            -Q "DELE /htdocs/.ftp-deploy-sync-state.json" \
+            "ftp://${{ secrets.FTP_SERVER }}/" || true
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
