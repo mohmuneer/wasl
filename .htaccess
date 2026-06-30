@@ -1,2 +1,2 @@
-# اختبار: هل تُطبَّق توجيهات php_value من .htaccess على هذه الاستضافة؟
-php_value session.save_path "/tmp/wasl_test_path"
+# تحديد مسار تخزين الجلسات يدوياً (المسار الافتراضي على InfinityFree غير قابل للكتابة لهذا الحساب)
+php_value session.save_path "/home/vol10_4/infinityfree.com/if0_42304233/htdocs/storage/sessions"
