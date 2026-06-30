@@ -101,8 +101,6 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
 
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        html,body{overflow-x:hidden}
         body{font-family:'Cairo',sans-serif;min-height:100dvh;display:flex;align-items:center;
              justify-content:center;background:linear-gradient(135deg,#0d4a1c 0%,#1a6b30 40%,#21409a 100%);
              position:relative}
@@ -113,9 +111,8 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
             background:rgba(255,255,255,.06);bottom:-80px;right:-80px;animation:float 10s ease-in-out infinite reverse;
             pointer-events:none}
         @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
-        .login-wrapper{display:flex;width:900px;width:min(900px,calc(100vw - 20px));border-radius:24px;overflow:hidden;
-            box-shadow:0 30px 80px rgba(0,0,0,.4);position:relative;z-index:1;animation:slideUp .6s ease;
-            margin:10px}
+        .login-wrapper{display:flex;width:900px;border-radius:24px;overflow:hidden;
+            box-shadow:0 30px 80px rgba(0,0,0,.4);position:relative;z-index:1;animation:slideUp .6s ease}
         @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
         .login-brand{flex:1;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);display:flex;
             flex-direction:column;align-items:center;justify-content:center;padding:50px 30px;
@@ -159,38 +156,29 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
         .btn-login:disabled{opacity:.5;cursor:not-allowed;transform:none}
         .form-footer{text-align:center;margin-top:22px;font-size:.8rem;color:#bbb}
 
-        /* Mobile-first: single column */
+        /* Mobile-first: fullscreen card */
         .login-brand{display:none}
-        .login-form-side{width:100%;padding:32px 20px}
+        .login-wrapper{width:100%;min-height:100dvh;border-radius:0;box-shadow:none;margin:0}
+        .login-form-side{width:100%;min-height:100dvh;padding:40px 24px}
         .form-header h2{font-size:1.4rem}
         .form-header p{font-size:.82rem}
+        body::before,body::after{animation:none}
 
         /* Small phones */
         @media(max-width:380px){
-            .login-wrapper{border-radius:16px;margin:8px}
-            .login-form-side{padding:24px 14px}
+            .login-form-side{padding:28px 16px}
             .form-control{padding:12px 36px 12px 12px;font-size:.92rem}
             .btn-login{padding:14px;font-size:1rem}
             .form-header h2{font-size:1.2rem}
         }
 
-        /* Tablets & up */
+        /* Tablets & up: centered card again */
         @media(min-width:701px){
+            .login-wrapper{width:900px;min-height:0;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.4);margin:0}
             .login-brand{display:flex}
-            .login-form-side{width:400px;padding:50px 40px}
-            .login-form-side{padding:50px 40px}
+            .login-form-side{width:400px;min-height:0;padding:50px 40px}
             .form-header h2{font-size:1.6rem}
-        }
-
-        /* Landscape phones */
-        @media(max-height:500px) and (orientation:landscape){
-            body{align-items:flex-start;padding:10px 0}
-            .login-wrapper{margin:5px auto}
-            .login-form-side{padding:20px}
-            .form-header{margin-bottom:14px}
-            .form-group{margin-bottom:12px}
-            .form-control{padding:10px 36px 10px 12px}
-            .btn-login{padding:12px}
+            body::before,body::after{animation:float 8s ease-in-out infinite}
         }
     </style>
 </head>
