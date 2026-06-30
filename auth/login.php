@@ -97,7 +97,7 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
     <title>تسجيل الدخول – <?= htmlspecialchars($systemName) ?></title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../admin/plugins/fontawesome-free/css/all.min.css">
 
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
