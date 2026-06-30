@@ -101,16 +101,21 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
 
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Cairo',sans-serif;min-height:100vh;display:flex;align-items:center;
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html,body{overflow-x:hidden}
+        body{font-family:'Cairo',sans-serif;min-height:100dvh;display:flex;align-items:center;
              justify-content:center;background:linear-gradient(135deg,#0d4a1c 0%,#1a6b30 40%,#21409a 100%);
-             position:relative;overflow:hidden}
-        body::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;
-            background:rgba(255,255,255,.04);top:-150px;left:-150px;animation:float 8s ease-in-out infinite}
-        body::after{content:'';position:absolute;width:350px;height:350px;border-radius:50%;
-            background:rgba(255,255,255,.06);bottom:-80px;right:-80px;animation:float 10s ease-in-out infinite reverse}
+             position:relative}
+        body::before{content:'';position:fixed;width:500px;height:500px;border-radius:50%;
+            background:rgba(255,255,255,.04);top:-150px;left:-150px;animation:float 8s ease-in-out infinite;
+            pointer-events:none}
+        body::after{content:'';position:fixed;width:350px;height:350px;border-radius:50%;
+            background:rgba(255,255,255,.06);bottom:-80px;right:-80px;animation:float 10s ease-in-out infinite reverse;
+            pointer-events:none}
         @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
-        .login-wrapper{display:flex;width:900px;max-width:96vw;border-radius:24px;overflow:hidden;
-            box-shadow:0 30px 80px rgba(0,0,0,.4);position:relative;z-index:1;animation:slideUp .6s ease}
+        .login-wrapper{display:flex;width:900px;width:min(900px,calc(100vw - 20px));border-radius:24px;overflow:hidden;
+            box-shadow:0 30px 80px rgba(0,0,0,.4);position:relative;z-index:1;animation:slideUp .6s ease;
+            margin:10px}
         @keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
         .login-brand{flex:1;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);display:flex;
             flex-direction:column;align-items:center;justify-content:center;padding:50px 30px;
@@ -133,29 +138,60 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
         .input-wrap>i.icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);
             color:#aaa;font-size:.92rem;pointer-events:none}
         .toggle-pass{position:absolute;left:14px;top:50%;transform:translateY(-50%);
-            color:#aaa;cursor:pointer;font-size:.92rem}
-        .form-control{width:100%;padding:12px 42px 12px 14px;border:1.5px solid #e0e0e0;
-            border-radius:10px;font-family:'Cairo',sans-serif;font-size:.95rem;color:#333;
-            transition:border-color .25s,box-shadow .25s;outline:none;direction:rtl}
+            color:#aaa;cursor:pointer;font-size:.92rem;z-index:2;padding:8px}
+        .form-control{width:100%;padding:14px 42px 14px 14px;border:1.5px solid #e0e0e0;
+            border-radius:12px;font-family:'Cairo',sans-serif;font-size:1rem;color:#333;
+            transition:border-color .25s,box-shadow .25s;outline:none;direction:rtl;
+            -webkit-appearance:none;appearance:none}
         .form-control:focus{border-color:#0d4a1c;box-shadow:0 0 0 3px rgba(13,74,28,.12)}
         input[type=password].form-control{padding-left:42px}
-        .alert{border-radius:10px;padding:12px 16px;font-size:.87rem;margin-bottom:18px;
+        .alert{border-radius:12px;padding:12px 16px;font-size:.87rem;margin-bottom:18px;
             display:flex;align-items:flex-start;gap:8px}
         .alert-danger {background:#fff1f0;color:#c0392b;border:1px solid #ffc9c9}
         .alert-warning{background:#fffbe6;color:#7d6608;border:1px solid #ffe58f}
         .lock-timer{font-weight:700;font-size:1.1em}
-        .btn-login{width:100%;padding:14px;background:linear-gradient(135deg,#0d4a1c,#21409a);
-            color:#fff;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1rem;
-            font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s}
+        .btn-login{width:100%;padding:16px;background:linear-gradient(135deg,#0d4a1c,#21409a);
+            color:#fff;border:none;border-radius:12px;font-family:'Cairo',sans-serif;font-size:1.05rem;
+            font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;
+            -webkit-appearance:none;appearance:none}
         .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(13,74,28,.35)}
+        .btn-login:active{transform:translateY(0)}
         .btn-login:disabled{opacity:.5;cursor:not-allowed;transform:none}
         .form-footer{text-align:center;margin-top:22px;font-size:.8rem;color:#bbb}
-        /* mobile-first: single column by default */
-        .login-brand{display:none}
-        .login-form-side{width:100%;padding:40px 22px}
 
-        /* two-column layout only on wider screens */
-        @media(min-width:701px){.login-brand{display:flex}.login-form-side{width:400px;padding:50px 40px}}
+        /* Mobile-first: single column */
+        .login-brand{display:none}
+        .login-form-side{width:100%;padding:32px 20px}
+        .form-header h2{font-size:1.4rem}
+        .form-header p{font-size:.82rem}
+
+        /* Small phones */
+        @media(max-width:380px){
+            .login-wrapper{border-radius:16px;margin:8px}
+            .login-form-side{padding:24px 14px}
+            .form-control{padding:12px 36px 12px 12px;font-size:.92rem}
+            .btn-login{padding:14px;font-size:1rem}
+            .form-header h2{font-size:1.2rem}
+        }
+
+        /* Tablets & up */
+        @media(min-width:701px){
+            .login-brand{display:flex}
+            .login-form-side{width:400px;padding:50px 40px}
+            .login-form-side{padding:50px 40px}
+            .form-header h2{font-size:1.6rem}
+        }
+
+        /* Landscape phones */
+        @media(max-height:500px) and (orientation:landscape){
+            body{align-items:flex-start;padding:10px 0}
+            .login-wrapper{margin:5px auto}
+            .login-form-side{padding:20px}
+            .form-header{margin-bottom:14px}
+            .form-group{margin-bottom:12px}
+            .form-control{padding:10px 36px 10px 12px}
+            .btn-login{padding:12px}
+        }
     </style>
 </head>
 <body>
