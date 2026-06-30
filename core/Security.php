@@ -36,6 +36,7 @@ class Security
 
         // قائمة المسارات المُعفاة (AJAX داخلية تتحقق من الجلسة بطريقتها)
         $exempt = [
+            'index.php',               // صفحة الدخول الرئيسية، تتحقق بنفسها عبر Auth::validateCsrf()
             'login.php',              // يتحقق بنفسه عبر Auth::validateCsrf()
             'send_message.php',
             'typing_status.php',
