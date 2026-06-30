@@ -1,9 +1,19 @@
 <?php
 // ─── إعدادات قاعدة البيانات ──────────────────────────────────
-!defined('DB_HOST')    && define('DB_HOST',    'localhost');
-!defined('DB_NAME')    && define('DB_NAME',    'wasl');
-!defined('DB_USER')    && define('DB_USER',    'root');
-!defined('DB_PASS')    && define('DB_PASS',    '');
+// محلي (XAMPP) افتراضياً، ويتحول تلقائياً لبيانات InfinityFree عند النشر
+$isInfinityFree = isset($_SERVER['SERVER_NAME']) && str_ends_with($_SERVER['SERVER_NAME'], '.wuaze.com');
+
+if ($isInfinityFree) {
+    !defined('DB_HOST') && define('DB_HOST',    'sql311.infinityfree.com');
+    !defined('DB_NAME') && define('DB_NAME',    'if0_42304233_wasl');
+    !defined('DB_USER') && define('DB_USER',    'if0_42304233');
+    !defined('DB_PASS') && define('DB_PASS',    '716324425');
+} else {
+    !defined('DB_HOST') && define('DB_HOST',    'localhost');
+    !defined('DB_NAME') && define('DB_NAME',    'wasl');
+    !defined('DB_USER') && define('DB_USER',    'root');
+    !defined('DB_PASS') && define('DB_PASS',    '');
+}
 !defined('DB_CHARSET') && define('DB_CHARSET', 'utf8mb4');
 
 // ─── مسار مجلد الكاش ─────────────────────────────────────────
