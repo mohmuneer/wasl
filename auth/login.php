@@ -104,9 +104,10 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
 
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{overflow-x:hidden}
         body{font-family:'Cairo',sans-serif;min-height:100dvh;display:flex;align-items:center;
              justify-content:center;background:linear-gradient(135deg,#0d4a1c 0%,#1a6b30 40%,#21409a 100%);
-             position:relative}
+             position:relative;overflow-x:hidden;width:100%}
         body::before{content:'';position:fixed;width:500px;height:500px;border-radius:50%;
             background:rgba(255,255,255,.04);top:-150px;left:-150px;animation:float 8s ease-in-out infinite;
             pointer-events:none}
@@ -165,7 +166,7 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
         .login-form-side{width:100%;min-height:100dvh;padding:40px 24px}
         .form-header h2{font-size:1.4rem}
         .form-header p{font-size:.82rem}
-        body::before,body::after{animation:none}
+        body::before,body::after{display:none}
 
         /* Small phones */
         @media(max-width:380px){
@@ -181,7 +182,7 @@ $systemLogo = $sys['system_logo'] ?? 'logo_1777800792.png';
             .login-brand{display:flex}
             .login-form-side{width:400px;min-height:0;padding:50px 40px}
             .form-header h2{font-size:1.6rem}
-            body::before,body::after{animation:float 8s ease-in-out infinite}
+            body::before,body::after{display:block;animation:float 8s ease-in-out infinite}
         }
     </style>
 </head>

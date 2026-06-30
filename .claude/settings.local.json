@@ -35,7 +35,32 @@
       "Bash(git rm *)",
       "Bash(git add *)",
       "Bash(git config *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git branch *)",
+      "Bash(ssh -o BatchMode=yes -o ConnectTimeout=8 -T git@github.com)",
+      "Read(//c/Users/MOHAMMED/.ssh/**)",
+      "Bash(xxd ~/.ssh/id_rsa.pub)",
+      "Bash(ssh-keygen -lf ~/.ssh/id_rsa.pub)",
+      "Bash(where.exe git-credential-manager.exe)",
+      "Bash(where.exe git-credential-manager-core.exe)",
+      "Bash(git push *)",
+      "Bash(git commit *)",
+      "Bash(grep -n 'REQUEST_METHOD\\\\|\\\\$_POST' admin/index.php)",
+      "Bash(ls -la \"/c/Users/MOHAMMED/Downloads/\" | grep -i wasl; echo \"---size---\"; du -h \"/c/Users/MOHAMMED/Downloads/wasl \\(2\\).sql\" 2>&1)",
+      "Read(//c/Users/MOHAMMED/Downloads//**)",
+      "Bash(gh run *)",
+      "PowerShell(gh run list --branch main --limit 3 2>&1)",
+      "PowerShell(gh --version 2>&1)",
+      "Bash(curl -s -D - \"https://wasl.wuaze.com/\" -o /tmp/live_index.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -v -s \"https://wasl.wuaze.com/\" -o /tmp/live_index.html)",
+      "Bash(curl -s -D - -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/124.0 Safari/537.36\" \"https://wasl.wuaze.com/\" -o /tmp/live_index.html)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(git fetch *)",
+      "WebFetch(domain:wasl.wuaze.com)",
+      "Bash(git credential-manager *)",
+      "Bash(git credential *)",
+      "Bash(unset TOKEN)"
     ]
   }
 }
