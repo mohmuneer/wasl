@@ -1,2 +1,2 @@
-# تحميل إعداد مسار الجلسات قبل تنفيذ أي كود PHP في الموقع
-php_value auto_prepend_file "config/session_bootstrap.php"
+# اختبار: هل تُطبَّق توجيهات php_value من .htaccess على هذه الاستضافة؟
+php_value session.save_path "/tmp/wasl_test_path"

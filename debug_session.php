@@ -19,3 +19,7 @@ if (is_dir($d)) {
 }
 echo "server software: " . ($_SERVER['SERVER_SOFTWARE'] ?? '?') . "\n";
 echo "request time: " . date('H:i:s') . "\n";
+echo "DOCUMENT_ROOT: " . ($_SERVER['DOCUMENT_ROOT'] ?? '?') . "\n";
+echo "SCRIPT_FILENAME: " . ($_SERVER['SCRIPT_FILENAME'] ?? '?') . "\n";
+echo "__DIR__: " . __DIR__ . "\n";
+echo "getcwd(): " . getcwd() . "\n";
