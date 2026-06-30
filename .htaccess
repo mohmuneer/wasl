@@ -1,0 +1,2 @@
+# تحميل إعداد مسار الجلسات قبل تنفيذ أي كود PHP في الموقع
+php_value auto_prepend_file "config/session_bootstrap.php"

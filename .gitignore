@@ -5,6 +5,7 @@
 /storage/cache/*
 !/storage/cache/.htaccess
 /storage/purifier_cache/*
+/storage/sessions/*
 
 # User-uploaded / runtime content (already live on the server)
 /uploads/*
