@@ -67,9 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_article']) && $c
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>إضافة مقالة جديدة</title>
 <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
-<link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
 <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-<link rel="stylesheet" href="../../plugins/summernote/summernote-bs4.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
 <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="../../dist/css/custom.css?v=202606261542">
 <script src="../../plugins/jquery/jquery.min.js"></script>
@@ -225,7 +225,7 @@ body{direction:rtl;overflow-x:hidden;scrollbar-width:none;background:#f0f2f7}
 </div><!-- /content-wrapper -->
 
 <?php include __DIR__ . '/../../main-footer.php'; ?>
-<script src="../../plugins/summernote/summernote-bs4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <script>
 $(function(){
     $('#articleContent').summernote({

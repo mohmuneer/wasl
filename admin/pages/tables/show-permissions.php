@@ -46,19 +46,19 @@ if (isset($_GET['delete_id'])) {
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bbootstrap 4 -->
-    <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/css/tempusdominus-bootstrap-4.min.css">
     <!-- iCheck -->
-    <link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
     <!-- JQVMap -->
-    <link rel="stylesheet" href="../../plugins/jqvmap/jqvmap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
     <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="../../plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.3/css/OverlayScrollbars.min.css">
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="../../plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css">
     <!-- summernote -->
-    <link rel="stylesheet" href="../../plugins/summernote/summernote-bs4.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- Bootstrap 4 RTL -->
@@ -237,7 +237,7 @@ if (isset($_GET['delete_id'])) {
         <!-- jQuery -->
         <script src="../../plugins/jquery/jquery.min.js"></script>
         <!-- jQuery UI 1.11.4 -->
-        <script src="../../plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.13.2/jquery-ui.min.js"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
         <script>
             $.widget.bridge('uibutton', $.ui.button)
@@ -247,23 +247,23 @@ if (isset($_GET['delete_id'])) {
         <!-- Bootstrap 4 -->
         <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
         <!-- ChartJS -->
-        <script src="../../plugins/chart.js/Chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
         <!-- Sparkline -->
-        <script src="../../plugins/sparklines/sparkline.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-sparkline@2.1.2/jquery.sparkline.min.js"></script>
         <!-- JQVMap -->
-        <script src="../../plugins/jqvmap/jquery.vmap.min.js"></script>
-        <script src="../../plugins/jqvmap/maps/jquery.vmap.world.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jquery.vmap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/maps/jquery.vmap.world.js"></script>
         <!-- jQuery Knob Chart -->
-        <script src="../../plugins/jquery-knob/jquery.knob.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-knob@1.2.13/dist/jquery.knob.min.js"></script>
         <!-- daterangepicker -->
-        <script src="../../plugins/moment/moment.min.js"></script>
-        <script src="../../plugins/daterangepicker/daterangepicker.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js"></script>
         <!-- Tempusdominus Bootstrap 4 -->
-        <script src="../../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/js/tempusdominus-bootstrap-4.min.js"></script>
         <!-- Summernote -->
-        <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
         <!-- overlayScrollbars -->
-        <script src="../../plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.3/js/jquery.overlayScrollbars.min.js"></script>
         <!-- AdminLTE App -->
         <script src="../../dist/js/adminlte.js"></script>
         <!-- AdminLTE dashboard demo (This is only for demo purposes) -->

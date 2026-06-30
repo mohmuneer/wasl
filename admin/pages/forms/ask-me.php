@@ -34,8 +34,8 @@ $current_page_id = $menu_item['id'] ?? 0;
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../dist/css/custom.css?v=202606261542">
-    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
-    <link rel="stylesheet" href="../../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
     <style>
     .chat-container {
         height: 65vh;

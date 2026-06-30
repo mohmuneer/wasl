@@ -165,13 +165,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_signature'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-    <link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <link rel="stylesheet" href="../../plugins/jqvmap/jqvmap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css">
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="../../plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <link rel="stylesheet" href="../../plugins/daterangepicker/daterangepicker.css">
-    <link rel="stylesheet" href="../../plugins/summernote/summernote-bs4.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.3/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../dist/css/custom.css?v=202606261542">
@@ -338,22 +338,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_signature'])) {
         </div>
 
         <script src="../../plugins/jquery/jquery.min.js"></script>
-        <script src="../../plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.13.2/jquery-ui.min.js"></script>
         <script>
             $.widget.bridge('uibutton', $.ui.button)
         </script>
         <script src="https://cdn.rtlcss.com/bootstrap/v4.2.1/js/bootstrap.min.js"></script>
         <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="../../plugins/chart.js/Chart.min.js"></script>
-        <script src="../../plugins/sparklines/sparkline.js"></script>
-        <script src="../../plugins/jqvmap/jquery.vmap.min.js"></script>
-        <script src="../../plugins/jqvmap/maps/jquery.vmap.world.js"></script>
-        <script src="../../plugins/jquery-knob/jquery.knob.min.js"></script>
-        <script src="../../plugins/moment/moment.min.js"></script>
-        <script src="../../plugins/daterangepicker/daterangepicker.js"></script>
-        <script src="../../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-        <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
-        <script src="../../plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-sparkline@2.1.2/jquery.sparkline.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jquery.vmap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/maps/jquery.vmap.world.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-knob@1.2.13/dist/jquery.knob.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.3/js/jquery.overlayScrollbars.min.js"></script>
         <script src="../../dist/js/adminlte.js"></script>
         <script src="../../dist/js/demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
