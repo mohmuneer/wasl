@@ -105,10 +105,10 @@ $stats = [
 <title>قاعدة المعرفة</title>
 <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
 <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
-<link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../dataset/css/bootstrap.min.css">
 <link rel="stylesheet" href="../../dist/css/custom.css?v=202606261542">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap4.min.css">
+<link rel="stylesheet" href="../../dataset/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="../../dataset/css/buttons.bootstrap4.min.css">
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <style>
@@ -385,21 +385,21 @@ body{direction:rtl;overflow-x:hidden;scrollbar-width:none;background:#f0f2f7}
 </div>
 
 <?php include __DIR__ . '/../../main-footer.php'; ?>
-<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
+<script src="../../dataset/js/jquery.dataTables.min.js"></script>
+<script src="../../dataset/js/dataTables.bootstrap4.min.js"></script>
+<script src="../../dataset/js/dataTables.buttons.min.js"></script>
+<script src="../../dataset/js/buttons.bootstrap4.min.js"></script>
+<script src="../../dataset/js/jszip.min.js"></script>
+<script src="../../dataset/js/buttons.html5.min.js"></script>
+<script src="../../dataset/js/buttons.colVis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function(){
 
     // ── DataTable ────────────────────────────────────────────────
     var table = $('#kbTable').DataTable({
-        scrollX: false,
+        scrollX: true,
+        scrollCollapse: true,
         pageLength: 25,
         order: [[7,'desc']],
         language: {
