@@ -34,9 +34,21 @@ if ($selected_user_id != "") {
     $stmt1->execute([$selected_user_id]);
     $assigned_permissions = $stmt1->fetchAll(PDO::FETCH_COLUMN);
 
-    $stmt2 = $pdo->prepare("SELECT menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive, can_view_group_tasks, can_view_own_tasks FROM user_menu_access WHERE user_id=?");
-    $stmt2->execute([$selected_user_id]);
-    $temp_pages = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        $stmt2 = $pdo->prepare("SELECT menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive, can_view_group_tasks, can_view_own_tasks FROM user_menu_access WHERE user_id=?");
+        $stmt2->execute([$selected_user_id]);
+        $temp_pages = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // الأعمدة الجديدة قد لا تكون مضافة بعد — تجربة بدونها
+        $stmt2 = $pdo->prepare("SELECT menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive FROM user_menu_access WHERE user_id=?");
+        $stmt2->execute([$selected_user_id]);
+        $temp_pages = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($temp_pages as &$tp) {
+            $tp['can_view_group_tasks'] = 0;
+            $tp['can_view_own_tasks']   = 0;
+        }
+        unset($tp);
+    }
     foreach ($temp_pages as $tp) {
         $assigned_pages[$tp['menu_id']] = $tp;
     }
@@ -81,8 +93,19 @@ if (isset($_POST['save_all_settings'])) {
         $stmt_g_ins = $pdo->prepare("INSERT INTO user_category_access (user_id, category_id) VALUES (?, ?)");
         foreach ($selected_groups as $g_id) { $stmt_g_ins->execute([$user_id, $g_id]); }
 
-        $stmt_p = $pdo->prepare("INSERT INTO user_menu_access (user_id, menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive, can_view_group_tasks, can_view_own_tasks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        
+        try {
+            $pdo->query("SELECT can_view_group_tasks FROM user_menu_access LIMIT 1");
+            $hasTaskCols = true;
+        } catch (PDOException $e) {
+            $hasTaskCols = false;
+        }
+
+        if ($hasTaskCols) {
+            $stmt_p = $pdo->prepare("INSERT INTO user_menu_access (user_id, menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive, can_view_group_tasks, can_view_own_tasks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        } else {
+            $stmt_p = $pdo->prepare("INSERT INTO user_menu_access (user_id, menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        }
+
         $new_is_admin = false;
         $admin_roles = ['ادمن الأساسي', 'ادمن الفرعي', 'mainadmin', 'subadmin', 'مدير النظام', 'مشرف عمليات'];
         foreach ($permissions_list as $pl) {
@@ -92,7 +115,13 @@ if (isset($_POST['save_all_settings'])) {
         }
 
         if ($new_is_admin) {
-            foreach ($all_pages as $pg) { $stmt_p->execute([$user_id, $pg['id'], 1, 1, 1, 1, 1, 1, 1, 1, 1]); }
+            foreach ($all_pages as $pg) {
+                if ($hasTaskCols) {
+                    $stmt_p->execute([$user_id, $pg['id'], 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+                } else {
+                    $stmt_p->execute([$user_id, $pg['id'], 1, 1, 1, 1, 1, 1, 1]);
+                }
+            }
         } else {
             foreach ($page_perms as $m_id => $actions) {
                 $v  = isset($actions['can_view']) ? 1 : 0;
@@ -104,7 +133,13 @@ if (isset($_POST['save_all_settings'])) {
                 $va = isset($actions['can_view_archive']) ? 1 : 0;
                 $vgt = isset($actions['can_view_group_tasks']) ? 1 : 0;
                 $vot = isset($actions['can_view_own_tasks']) ? 1 : 0;
-                if ($v || $a || $e || $d || $ap || $ar || $va || $vgt || $vot) { $stmt_p->execute([$user_id, $m_id, $v, $a, $e, $d, $ap, $ar, $va, $vgt, $vot]); }
+                $any = $v || $a || $e || $d || $ap || $ar || $va || $vgt || $vot;
+                if (!$any) continue;
+                if ($hasTaskCols) {
+                    $stmt_p->execute([$user_id, $m_id, $v, $a, $e, $d, $ap, $ar, $va, $vgt, $vot]);
+                } else {
+                    $stmt_p->execute([$user_id, $m_id, $v, $a, $e, $d, $ap, $ar, $va]);
+                }
             }
         }
 
