@@ -443,7 +443,37 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
         </div>
     </div>
 
-    <?php if ($selected_user_id): ?>
+    <?php if ($selected_user_id):
+        $groupTasks = [];
+        $userTasks  = [];
+        try {
+            $gtStmt = $pdo->query("
+                SELECT g.id, g.category_name, g.color,
+                       COUNT(DISTINCT r.id) AS ticket_count,
+                       COUNT(DISTINCT w.id) AS task_count
+                FROM issue_categories g
+                LEFT JOIN tickets r ON r.category_id = g.id
+                LEFT JOIN work_orders w ON w.ticket_id = r.id
+                GROUP BY g.id, g.category_name, g.color
+                ORDER BY g.category_name
+            ");
+            $groupTasks = $gtStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $utStmt = $pdo->prepare("
+                SELECT w.*, r.ticket_number, g.category_name,
+                       r.details AS req_details, b.branch_name
+                FROM work_orders w
+                LEFT JOIN tickets r ON w.ticket_id = r.id
+                LEFT JOIN issue_categories g ON r.category_id = g.id
+                LEFT JOIN branches b ON r.branch_id = b.id
+                WHERE w.assigned_to = ?
+                ORDER BY w.created_at DESC
+                LIMIT 20
+            ");
+            $utStmt->execute([$selected_user_id]);
+            $userTasks = $utStmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {}
+    ?>
 
     <!-- ══ الخطوة 2: تصنيفات المشاكل ══ -->
     <div class="section-card">
@@ -470,10 +500,100 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
         </div>
     </div>
 
-    <!-- ══ الخطوة 3: صلاحيات الصفحات ══ -->
+    <!-- ══ الخطوة 3: إحصائيات المهام ══ -->
     <div class="section-card">
         <div class="sc-head">
-            <h6><span class="step-badge">3</span><i class="fas fa-file-alt"></i>صلاحيات الصفحات التفصيلية</h6>
+            <h6><span class="step-badge">3</span><i class="fas fa-tasks"></i>إحصائيات المهام</h6>
+            <small style="color:#888;font-size:.78rem">عرض المهام حسب التصنيف والمستخدم</small>
+        </div>
+        <div class="sc-body">
+            <div class="row">
+                <!-- المهام حسب التصنيف -->
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <h6 style="font-size:.85rem;font-weight:700;color:#1a3a5c;margin-bottom:10px">
+                        <i class="fas fa-layer-group ml-1 text-primary"></i>المهام حسب التصنيف
+                    </h6>
+                    <div style="max-height:260px;overflow-y:auto">
+                        <table style="width:100%;font-size:.78rem;border-collapse:collapse">
+                            <thead>
+                                <tr style="border-bottom:2px solid #eee">
+                                    <th style="padding:6px 8px;text-align:right">التصنيف</th>
+                                    <th style="padding:6px 8px;text-align:center">تذاكر</th>
+                                    <th style="padding:6px 8px;text-align:center">مهام</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($groupTasks as $gt):
+                                    $isAssigned = in_array($gt['id'], $assigned_groups);
+                                ?>
+                                <tr style="border-bottom:1px solid #f0f2f5;<?= $isAssigned ? 'background:#f0f9ff' : '' ?>">
+                                    <td style="padding:6px 8px;text-align:right">
+                                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:<?= htmlspecialchars($gt['color'] ?? '#6c757d') ?>;margin-left:6px"></span>
+                                        <?= htmlspecialchars($gt['category_name']) ?>
+                                        <?php if ($isAssigned): ?>
+                                        <i class="fas fa-check-circle" style="color:#27ae60;font-size:.65rem;margin-right:4px" title="مسند للمستخدم"></i>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="padding:6px 8px;text-align:center;font-weight:700"><?= (int)$gt['ticket_count'] ?></td>
+                                    <td style="padding:6px 8px;text-align:center;font-weight:700"><?= (int)$gt['task_count'] ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- المهام المسندة للمستخدم -->
+                <div class="col-md-6">
+                    <h6 style="font-size:.85rem;font-weight:700;color:#1a3a5c;margin-bottom:10px">
+                        <i class="fas fa-user-cog ml-1 text-success"></i>آخر المهام المسندة للمستخدم
+                        <span class="badge badge-info" style="font-size:.7rem"><?= count($userTasks) ?></span>
+                    </h6>
+                    <div style="max-height:260px;overflow-y:auto">
+                        <?php if (empty($userTasks)): ?>
+                        <p style="text-align:center;color:#bbb;padding:20px 0;font-size:.82rem">
+                            <i class="fas fa-inbox fa-2x d-block mb-2"></i>لا توجد مهام مسندة لهذا المستخدم
+                        </p>
+                        <?php else: ?>
+                        <?php foreach ($userTasks as $ut): ?>
+                        <div style="background:#f8fafc;border-radius:8px;padding:8px 12px;margin-bottom:6px;border:1px solid #e2e8f0">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                                <span style="font-weight:700;font-size:.8rem;color:#1a3a5c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                                    <?= htmlspecialchars($ut['title']) ?>
+                                </span>
+                                <span style="font-size:.68rem;padding:2px 8px;border-radius:10px;font-weight:600;flex-shrink:0;
+                                    <?php
+                                    $st = $ut['status'];
+                                    if ($st === 'Completed') echo 'background:#d1fae5;color:#065f46';
+                                    elseif ($st === 'In Progress') echo 'background:#dbeafe;color:#1e40af';
+                                    elseif ($st === 'Cancelled') echo 'background:#fee2e2;color:#991b1b';
+                                    else echo 'background:#f1f5f9;color:#64748b';
+                                    ?>
+                                "><?= $st ?></span>
+                            </div>
+                            <div style="font-size:.7rem;color:#64748b;margin-top:4px">
+                                <i class="fas fa-tag ml-1" style="font-size:.65rem"></i><?= htmlspecialchars($ut['category_name'] ?? '—') ?>
+                                <?php if (!empty($ut['ticket_number'])): ?>
+                                <span class="mx-1">|</span>
+                                <i class="fas fa-hashtag ml-1" style="font-size:.65rem"></i><?= htmlspecialchars($ut['ticket_number']) ?>
+                                <?php endif; ?>
+                                <?php if (!empty($ut['branch_name'])): ?>
+                                <span class="mx-1">|</span>
+                                <i class="fas fa-building ml-1" style="font-size:.65rem"></i><?= htmlspecialchars($ut['branch_name']) ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ الخطوة 4: صلاحيات الصفحات ══ -->
+    <div class="section-card">
+        <div class="sc-head">
+            <h6><span class="step-badge">4</span><i class="fas fa-file-alt"></i>صلاحيات الصفحات التفصيلية</h6>
             <div style="display:flex;align-items:center;gap:10px">
                 <div id="searchWrapper"></div>
                 <?php if ($is_admin): ?>
