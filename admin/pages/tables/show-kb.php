@@ -17,6 +17,7 @@ try {
             try { $pdo->exec($q); } catch (PDOException $e) {}
         }
     }
+    try { $pdo->exec("ALTER TABLE " . TBL_KB_ARTICLES . " ADD INDEX idx_created_by (created_by)"); } catch (PDOException $e) {}
 } catch (PDOException $e) {}
 
 // ── صلاحيات ──────────────────────────────────────────────────────
@@ -35,9 +36,10 @@ if ($current_page_id > 0) {
 
 // ── حذف تصنيف ────────────────────────────────────────────────────
 if (isset($_GET['del_cat']) && $can_delete) {
-    $cid = (int)$_GET['del_cat'];
-    $used = (int)$pdo->prepare("SELECT COUNT(*) FROM " . TBL_KB_ARTICLES . " WHERE category_id=?")->execute([$cid])
-            ? $pdo->query("SELECT COUNT(*) FROM " . TBL_KB_ARTICLES . " WHERE category_id=$cid")->fetchColumn() : 0;
+    $cid   = (int)$_GET['del_cat'];
+    $usedS = $pdo->prepare("SELECT COUNT(*) FROM " . TBL_KB_ARTICLES . " WHERE category_id=?");
+    $usedS->execute([$cid]);
+    $used = (int)$usedS->fetchColumn();
     if ($used == 0) {
         $pdo->prepare("DELETE FROM " . TBL_KB_CATEGORIES . " WHERE id=?")->execute([$cid]);
         header("Location: show-kb.php?cat_deleted=1"); exit;
@@ -79,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_cat'])) {
 // ── البيانات ──────────────────────────────────────────────────────
 $categories = $pdo->query("SELECT * FROM " . TBL_KB_CATEGORIES . " WHERE is_active=1 ORDER BY sort_order,name")->fetchAll(PDO::FETCH_ASSOC);
 
+$limit = 500;
 $articles = $pdo->query("
     SELECT a.id, a.title, a.status, a.featured, a.views, a.helpful_yes, a.helpful_no,
            a.tags, a.created_at, a.updated_at,
@@ -88,13 +91,17 @@ $articles = $pdo->query("
     LEFT JOIN " . TBL_KB_CATEGORIES . " c ON a.category_id = c.id
     LEFT JOIN sys_users u ON a.created_by = u.id
     ORDER BY a.created_at DESC
+    LIMIT $limit
 ")->fetchAll(PDO::FETCH_ASSOC);
 
+$totalArticles = (int)$pdo->query("SELECT COUNT(*) FROM " . TBL_KB_ARTICLES)->fetchColumn();
+
 $stats = [
-    'total'     => count($articles),
-    'published' => count(array_filter($articles, fn($a) => $a['status'] === 'published')),
-    'draft'     => count(array_filter($articles, fn($a) => $a['status'] === 'draft')),
+    'total'     => $totalArticles,
+    'published' => $pdo->query("SELECT COUNT(*) FROM " . TBL_KB_ARTICLES . " WHERE status='published'")->fetchColumn(),
+    'draft'     => $pdo->query("SELECT COUNT(*) FROM " . TBL_KB_ARTICLES . " WHERE status='draft'")->fetchColumn(),
     'views'     => array_sum(array_column($articles, 'views')),
+    'showing'   => count($articles),
 ];
 ?>
 <!DOCTYPE html>
@@ -185,6 +192,11 @@ body{direction:rtl;overflow-x:hidden;scrollbar-width:none;background:#f0f2f7}
     <div class="col-6 col-md-3 mb-3">
         <div class="kb-stat"><div class="si" style="background:#8e44ad"><i class="fas fa-eye"></i></div><div><div class="sv"><?= number_format($stats['views']) ?></div><div class="sl">إجمالي المشاهدات</div></div></div>
     </div>
+    <?php if ($stats['showing'] < $stats['total']): ?>
+    <div class="col-12 mb-0">
+        <small style="color:#e67e22"><i class="fas fa-info-circle ml-1"></i>عرض آخر <?= $stats['showing'] ?> مقالة من أصل <?= $stats['total'] ?></small>
+    </div>
+    <?php endif; ?>
 </div>
 
 <!-- ── الجدول ── -->
@@ -398,8 +410,6 @@ $(function(){
 
     // ── DataTable ────────────────────────────────────────────────
     var table = $('#kbTable').DataTable({
-        scrollX: true,
-        scrollCollapse: true,
         pageLength: 25,
         order: [[7,'desc']],
         language: {
@@ -417,7 +427,8 @@ $(function(){
         columnDefs: [
             { orderable:false, targets:[5,8] },
             { searchable:false, targets:[0,4,5,8] }
-        ]
+        ],
+        deferRender: true
     });
 
     // ── فلتر مخصص ───────────────────────────────────────────────

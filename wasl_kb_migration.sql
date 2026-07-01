@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS kb_articles (
     INDEX idx_status   (status),
     INDEX idx_featured (featured),
     INDEX idx_created  (created_at),
+    INDEX idx_created_by (created_by),
     FULLTEXT idx_ft_search (title, summary, tags)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
