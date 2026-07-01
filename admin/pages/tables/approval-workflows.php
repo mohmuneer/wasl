@@ -703,6 +703,7 @@ jQuery(function ($) {
 
     /* ── DataTable ── */
     if ($.fn.DataTable && $('#wfTable tbody tr').length) {
+        try {
         _wfTable = $('#wfTable').DataTable({
             language: { emptyTable: 'لا توجد بيانات', info: 'عرض _START_ إلى _END_ من أصل _TOTAL_ سجل', infoEmpty: 'عرض 0 إلى 0 من أصل 0 سجل', infoFiltered: '(منتقاة من _MAX_ سجل إجمالي)', lengthMenu: 'عرض _MENU_ سجل في الصفحة', loadingRecords: 'جارٍ التحميل...', processing: 'جارٍ المعالجة...', search: 'بحث:', zeroRecords: 'لم يعثر على أية سجلات', paginate: { first: 'الأول', last: 'الأخير', next: 'التالي', previous: 'السابق' }, aria: { sortAscending: ': تفعيل لترتيب العمود تصاعدياً', sortDescending: ': تفعيل لترتيب العمود تنازلياً' } },
             pageLength: 10,
@@ -739,6 +740,7 @@ jQuery(function ($) {
                 }
             ]
         });
+        } catch(e) { _wfTable = null; console.warn('DataTables:', e.message); }
     }
 
     /* ── فلترة مخصصة ── */

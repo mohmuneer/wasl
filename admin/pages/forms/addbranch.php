@@ -319,7 +319,8 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
 <script>
 $(document).ready(function() {
 
-    // DataTable
+    // DataTable — مع try-catch لمنع تعطل باقي الـ JS عند منع CSP لـ eval
+    try {
     $('#branchTable').DataTable({
         language: {
             emptyTable: 'لا توجد فروع مسجلة حالياً',
@@ -338,6 +339,7 @@ $(document).ready(function() {
         columnDefs: [{ orderable:false, targets:[2] }],
         pageLength: 15
     });
+    } catch(e) { console.warn('DataTables غير متاح:', e.message); }
 
     // زر التعديل
     $(document).on('click', '.edit-btn', function() {

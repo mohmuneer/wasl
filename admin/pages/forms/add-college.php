@@ -354,12 +354,15 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
 $(document).ready(function() {
 
     // DataTable
-    var dt = $('#regionTable').DataTable({
-        language: { emptyTable:'لا توجد بيانات', info:'عرض _START_ إلى _END_ من أصل _TOTAL_ سجل', infoEmpty:'عرض 0 إلى 0 من أصل 0 سجل', infoFiltered:'(منتقاة من _MAX_ سجل إجمالي)', lengthMenu:'عرض _MENU_ سجل في الصفحة', loadingRecords:'جارٍ التحميل...', processing:'جارٍ المعالجة...', search:'بحث:', zeroRecords:'لم يعثر على أية سجلات', paginate:{ first:'الأول', last:'الأخير', next:'التالي', previous:'السابق' }, aria:{ sortAscending:': تفعيل لترتيب العمود تصاعدياً', sortDescending:': تفعيل لترتيب العمود تنازلياً' } },
-        order: [[2,'asc'],[1,'asc']],
-        columnDefs: [{ orderable:false, targets:[3] }],
-        pageLength: 15
-    });
+    var dt;
+    try {
+        dt = $('#regionTable').DataTable({
+            language: { emptyTable:'لا توجد بيانات', info:'عرض _START_ إلى _END_ من أصل _TOTAL_ سجل', infoEmpty:'عرض 0 إلى 0 من أصل 0 سجل', infoFiltered:'(منتقاة من _MAX_ سجل إجمالي)', lengthMenu:'عرض _MENU_ سجل في الصفحة', loadingRecords:'جارٍ التحميل...', processing:'جارٍ المعالجة...', search:'بحث:', zeroRecords:'لم يعثر على أية سجلات', paginate:{ first:'الأول', last:'الأخير', next:'التالي', previous:'السابق' }, aria:{ sortAscending:': تفعيل لترتيب العمود تصاعدياً', sortDescending:': تفعيل لترتيب العمود تنازلياً' } },
+            order: [[2,'asc'],[1,'asc']],
+            columnDefs: [{ orderable:false, targets:[3] }],
+            pageLength: 15
+        });
+    } catch(e) { dt = null; console.warn('DataTables:', e.message); }
 
     // فلتر الفروع
     var TOTAL = <?= $totalRegions ?>;
