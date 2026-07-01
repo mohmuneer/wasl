@@ -733,9 +733,16 @@ function updateUnreadCount() {
     });
 }
 
-// تحديث العدد كل 30 ثوانٍ
-setInterval(updateUnreadCount, 30000);
-updateUnreadCount(); // تحديث فوري عند تحميل الصفحة
+// تحديث العدد كل 30 ثوانٍ (بعد تحميل jQuery)
+if (typeof jQuery !== 'undefined') {
+    setInterval(updateUnreadCount, 30000);
+    updateUnreadCount();
+} else {
+    document.addEventListener('DOMContentLoaded', function() {
+        setInterval(updateUnreadCount, 30000);
+        updateUnreadCount();
+    });
+}
 // وظيفة إرسال الرسالة
 function sendMessage(receiverId, text) {
     $.post("send_message.php", {
