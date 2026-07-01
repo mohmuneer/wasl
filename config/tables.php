@@ -69,11 +69,6 @@ define('TBL_ASSET_CATEGORIES',      'asset_categories');
 define('TBL_MAINTENANCE_SCHEDULES', 'maintenance_schedules');
 define('TBL_MAINTENANCE_LOGS',      'maintenance_logs');
 
-// ─── قاعدة المعرفة ───────────────────────────────────────────
-define('TBL_KB_CATEGORIES', 'kb_categories');
-define('TBL_KB_ARTICLES',   'kb_articles');
-define('TBL_KB_FEEDBACK',   'kb_feedback');
-
 // ─── ERP (لا تعديل على أسمائها) ──────────────────────────────
 define('TBL_ERP_ACCOUNTS',      'GNR_ACCNT_TREE');
 define('TBL_ERP_UNITS',         'GNR_FN_UNT');

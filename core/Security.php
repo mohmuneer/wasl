@@ -43,8 +43,6 @@ class Security
             'get_unread_count.php',
             'process-ai.php',
             'process-signature.php',
-            'view-kb-article.php',    // تصويت AJAX
-            'show-kb.php',            // حفظ تصنيف AJAX
             'documents_dt.php',       // DataTables API
         ];
 
