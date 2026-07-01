@@ -150,6 +150,7 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
             </div>
             <div class="form-body">
                 <form method="POST" id="addForm">
+                    <?= Security::field() ?>
                     <label style="font-weight:600;font-size:.85rem;color:#555;margin-bottom:6px;display:block">
                         اسم الفرع <span style="color:#dc3545">*</span>
                     </label>
@@ -243,12 +244,6 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
                                 </td>
                             </tr>
                             <?php endforeach; ?>
-                            <?php if (empty($allBranches)): ?>
-                            <tr><td colspan="3" class="text-center text-muted py-4">
-                                <i class="fas fa-code-branch fa-2x mb-2 d-block" style="opacity:.3"></i>
-                                لا توجد فروع مسجلة حالياً
-                            </td></tr>
-                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -326,7 +321,10 @@ $(document).ready(function() {
 
     // DataTable
     $('#branchTable').DataTable({
-        language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json' },
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json',
+            emptyTable: 'لا توجد فروع مسجلة حالياً'
+        },
         order: [[0,'asc']],
         columnDefs: [{ orderable:false, targets:[2] }],
         pageLength: 15
