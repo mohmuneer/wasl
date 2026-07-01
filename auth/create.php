@@ -71,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
 
     <form method="post" class="card p-4 shadow" style="width:320px">
+        <?= Security::field() ?>
         <h4 class="mb-3 text-center">إنشاء حساب جديد</h4>
 
         <!-- رسائل التنبيه -->

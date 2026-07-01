@@ -357,6 +357,7 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
     </div>
     <form action="edit-lab.php" method="POST">
         <div class="modal-body">
+            <?= Security::field() ?>
             <input type="hidden" name="action" value="update">
             <input type="hidden" name="lab_id" id="editId">
             <div class="f-group">
@@ -401,6 +402,7 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
         <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
     </div>
     <form action="edit-lab.php" method="POST">
+        <?= Security::field() ?>
         <input type="hidden" name="action" value="delete">
         <input type="hidden" name="lab_id" id="delId">
         <div class="modal-body text-center">

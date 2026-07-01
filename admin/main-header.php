@@ -835,17 +835,31 @@ document.addEventListener('keydown', function(e) {
 (function(){
     var token = '<?= Security::token() ?>';
 
-    // 1. إضافة hidden field لكل form[method=post] لا يحتوي على التوكن
-    document.querySelectorAll('form').forEach(function(form){
-        var m = (form.getAttribute('method') || '').toUpperCase();
-        if (m !== 'POST' && m !== '') return;  // تجاهل GET
-        if (form.querySelector('[name="csrf_token"]')) return;  // موجود بالفعل
-        var inp = document.createElement('input');
-        inp.type  = 'hidden';
-        inp.name  = 'csrf_token';
-        inp.value = token;
-        form.appendChild(inp);
-    });
+    function injectCsrf() {
+        // 1. إضافة hidden field لكل form[method=post] لا يحتوي على التوكن
+        document.querySelectorAll('form').forEach(function(form){
+            var m = (form.getAttribute('method') || '').toUpperCase();
+            if (m !== 'POST' && m !== '') return;
+            if (form.querySelector('[name="csrf_token"]')) return;
+            var inp = document.createElement('input');
+            inp.type  = 'hidden';
+            inp.name  = 'csrf_token';
+            inp.value = token;
+            form.appendChild(inp);
+        });
+    }
+
+    // الانتظار حتى اكتمال DOM لأن الفورم تُنشأ بعد include main-header.php
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectCsrf);
+    } else {
+        injectCsrf();
+    }
+
+    // إعادة الحقن عند ظهور مودال بوتستراب (للمودالات الديناميكية)
+    if (window.jQuery) {
+        $(document).on('shown.bs.modal ajaxComplete', injectCsrf);
+    }
 
     // 2. إضافة التوكن لجميع طلبات jQuery AJAX
     if (window.jQuery) {
@@ -853,7 +867,6 @@ document.addEventListener('keydown', function(e) {
             beforeSend: function(xhr, settings) {
                 if (settings.type === 'POST' || settings.method === 'POST') {
                     xhr.setRequestHeader('X-CSRF-TOKEN', token);
-                    // أضف للـ data إن كانت form-encoded
                     if (typeof settings.data === 'string' && settings.data.indexOf('csrf_token') === -1) {
                         settings.data += (settings.data ? '&' : '') + 'csrf_token=' + token;
                     } else if (settings.data instanceof FormData && !settings.data.has('csrf_token')) {
@@ -863,5 +876,29 @@ document.addEventListener('keydown', function(e) {
             }
         });
     }
+
+    // 3. منع إرسال النموذج أكثر من مرة (تعطيل زر الإرسال بعد أول نقرة)
+    document.addEventListener('submit', function(e) {
+        var form = e.target;
+        if (form.getAttribute('data-submitted') === '1') {
+            e.preventDefault();
+            return;
+        }
+        form.setAttribute('data-submitted', '1');
+        var btns = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+        btns.forEach(function(btn) {
+            btn.disabled = true;
+            var orig = btn.getAttribute('data-orig-html');
+            if (!orig) {
+                btn.setAttribute('data-orig-html', btn.innerHTML);
+                btn.setAttribute('data-orig-value', btn.value);
+            }
+            if (btn.tagName === 'BUTTON') {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-1"></i> جاري الحفظ...';
+            } else {
+                btn.value = 'جاري الحفظ...';
+            }
+        });
+    }, true);
 })();
 </script>

@@ -44,6 +44,17 @@ class Security
             'process-ai.php',
             'process-signature.php',
             'documents_dt.php',       // DataTables API
+            // edit-* standalone handlers — لا تحتوي على فورم وتستقبل POST من صفحات أخرى
+            'edit-lab.php',
+            'edit-college.php',
+            'edit-branch.php',
+            'edit-group.php',
+            'edit-jobs.php',
+            'create.php',             // auth/create.php — نموذج تسجيل مستخدم جديد (لا يتضمن main-header)
+            'update-status.php',      // AJAX endpoint لتحديث حالة العميل
+            'reorder-menu.php',       // AJAX endpoint لإعادة ترتيب القائمة
+            'delete_message.php',     // AJAX endpoint لحذف الرسائل
+            'edit_message.php',       // AJAX endpoint لتعديل الرسائل
         ];
 
         $script = basename($_SERVER['SCRIPT_FILENAME'] ?? '');

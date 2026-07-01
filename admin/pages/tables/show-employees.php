@@ -425,6 +425,7 @@ body{direction:rtl;text-align:right;overflow-x:hidden;scrollbar-width:none;backg
         <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
     </div>
     <form method="post" enctype="multipart/form-data">
+        <?= Security::field() ?>
         <input type="hidden" name="add_dms" value="1">
         <div class="modal-body">
             <div class="row">
@@ -501,6 +502,7 @@ body{direction:rtl;text-align:right;overflow-x:hidden;scrollbar-width:none;backg
         <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
     </div>
     <form method="post" enctype="multipart/form-data">
+        <?= Security::field() ?>
         <input type="hidden" name="edit_dms" value="1">
         <input type="hidden" name="id" value="<?= $e['id'] ?>">
         <div class="modal-body">
