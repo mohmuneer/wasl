@@ -20,6 +20,8 @@ $all_pages = $pdo->query("SELECT id, title, link FROM sys_menu ORDER BY id ASC")
 $all_groups = $pdo->query("SELECT id, category_name FROM issue_categories ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
 
 $doc_page_ids = [63, 65, 66, 67, 68];
+$task_page_id = 28; // show-tasks.php
+$task_perms = ['view_group_tasks','view_own_tasks'];
 
 $assigned_permissions = [];
 $assigned_pages = []; 
@@ -32,7 +34,7 @@ if ($selected_user_id != "") {
     $stmt1->execute([$selected_user_id]);
     $assigned_permissions = $stmt1->fetchAll(PDO::FETCH_COLUMN);
 
-    $stmt2 = $pdo->prepare("SELECT menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive FROM user_menu_access WHERE user_id=?");
+    $stmt2 = $pdo->prepare("SELECT menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive, can_view_group_tasks, can_view_own_tasks FROM user_menu_access WHERE user_id=?");
     $stmt2->execute([$selected_user_id]);
     $temp_pages = $stmt2->fetchAll(PDO::FETCH_ASSOC);
     foreach ($temp_pages as $tp) {
@@ -79,7 +81,7 @@ if (isset($_POST['save_all_settings'])) {
         $stmt_g_ins = $pdo->prepare("INSERT INTO user_category_access (user_id, category_id) VALUES (?, ?)");
         foreach ($selected_groups as $g_id) { $stmt_g_ins->execute([$user_id, $g_id]); }
 
-        $stmt_p = $pdo->prepare("INSERT INTO user_menu_access (user_id, menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt_p = $pdo->prepare("INSERT INTO user_menu_access (user_id, menu_id, can_view, can_add, can_edit, can_delete, can_approve, can_archive, can_view_archive, can_view_group_tasks, can_view_own_tasks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         $new_is_admin = false;
         $admin_roles = ['ادمن الأساسي', 'ادمن الفرعي', 'mainadmin', 'subadmin', 'مدير النظام', 'مشرف عمليات'];
@@ -90,17 +92,19 @@ if (isset($_POST['save_all_settings'])) {
         }
 
         if ($new_is_admin) {
-            foreach ($all_pages as $pg) { $stmt_p->execute([$user_id, $pg['id'], 1, 1, 1, 1, 1, 1, 1]); }
+            foreach ($all_pages as $pg) { $stmt_p->execute([$user_id, $pg['id'], 1, 1, 1, 1, 1, 1, 1, 1, 1]); }
         } else {
             foreach ($page_perms as $m_id => $actions) {
-                $v = isset($actions['can_view']) ? 1 : 0;
-                $a = isset($actions['can_add']) ? 1 : 0;
-                $e = isset($actions['can_edit']) ? 1 : 0;
-                $d = isset($actions['can_delete']) ? 1 : 0;
+                $v  = isset($actions['can_view']) ? 1 : 0;
+                $a  = isset($actions['can_add']) ? 1 : 0;
+                $e  = isset($actions['can_edit']) ? 1 : 0;
+                $d  = isset($actions['can_delete']) ? 1 : 0;
                 $ap = isset($actions['can_approve']) ? 1 : 0;
                 $ar = isset($actions['can_archive']) ? 1 : 0;
                 $va = isset($actions['can_view_archive']) ? 1 : 0;
-                if ($v || $a || $e || $d || $ap || $ar || $va) { $stmt_p->execute([$user_id, $m_id, $v, $a, $e, $d, $ap, $ar, $va]); }
+                $vgt = isset($actions['can_view_group_tasks']) ? 1 : 0;
+                $vot = isset($actions['can_view_own_tasks']) ? 1 : 0;
+                if ($v || $a || $e || $d || $ap || $ar || $va || $vgt || $vot) { $stmt_p->execute([$user_id, $m_id, $v, $a, $e, $d, $ap, $ar, $va, $vgt, $vot]); }
             }
         }
 
@@ -202,7 +206,7 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
 /* رؤوس أعمدة ملونة */
 .th-view   { color:#3498db; } .th-add    { color:#27ae60; } .th-edit   { color:#f39c12; }
 .th-delete { color:#e74c3c; } .th-approve{ color:#9b59b6; } .th-archive{ color:#1abc9c; }
-.th-varch  { color:#7f8c8d; }
+.th-varch  { color:#7f8c8d; } .th-vgt    { color:#e67e22; } .th-vot    { color:#2c3e50; }
 
 /* switches ملونة */
 .sw-view   .custom-control-input:checked ~ .custom-control-label::before { background:#3498db!important; border-color:#3498db!important; }
@@ -212,6 +216,8 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
 .sw-approve.custom-control-input:checked ~ .custom-control-label::before { background:#9b59b6!important; border-color:#9b59b6!important; }
 .sw-archive.custom-control-input:checked ~ .custom-control-label::before { background:#1abc9c!important; border-color:#1abc9c!important; }
 .sw-varch  .custom-control-input:checked ~ .custom-control-label::before { background:#7f8c8d!important; border-color:#7f8c8d!important; }
+.sw-vgt    .custom-control-input:checked ~ .custom-control-label::before { background:#e67e22!important; border-color:#e67e22!important; }
+.sw-vot    .custom-control-input:checked ~ .custom-control-label::before { background:#2c3e50!important; border-color:#2c3e50!important; }
 
 /* toggle ALL row */
 .th-all-row th { background:#f8f9fa; }
@@ -444,10 +450,10 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
     </div>
 
     <?php if ($selected_user_id):
-        $groupTasks = [];
-        $userTasks  = [];
+        $groupTaskStats = [];
+        $userTaskCount  = 0;
         try {
-            $gtStmt = $pdo->query("
+            $gts = $pdo->query("
                 SELECT g.id, g.category_name, g.color,
                        COUNT(DISTINCT r.id) AS ticket_count,
                        COUNT(DISTINCT w.id) AS task_count
@@ -457,21 +463,12 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
                 GROUP BY g.id, g.category_name, g.color
                 ORDER BY g.category_name
             ");
-            $groupTasks = $gtStmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $utStmt = $pdo->prepare("
-                SELECT w.*, r.ticket_number, g.category_name,
-                       r.details AS req_details, b.branch_name
-                FROM work_orders w
-                LEFT JOIN tickets r ON w.ticket_id = r.id
-                LEFT JOIN issue_categories g ON r.category_id = g.id
-                LEFT JOIN branches b ON r.branch_id = b.id
-                WHERE w.assigned_to = ?
-                ORDER BY w.created_at DESC
-                LIMIT 20
-            ");
-            $utStmt->execute([$selected_user_id]);
-            $userTasks = $utStmt->fetchAll(PDO::FETCH_ASSOC);
+            $groupTaskStats = $gts->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {}
+        try {
+            $uts = $pdo->prepare("SELECT COUNT(*) FROM work_orders WHERE assigned_to = ?");
+            $uts->execute([$selected_user_id]);
+            $userTaskCount = (int)$uts->fetchColumn();
         } catch (PDOException $e) {}
     ?>
 
@@ -488,112 +485,40 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
             <div class="cat-grid">
                 <?php foreach ($all_groups as $group):
                     $isActive = in_array($group['id'], $assigned_groups);
+                    $stat = array_filter($groupTaskStats, fn($s) => (int)$s['id'] === (int)$group['id']);
+                    $stat = $stat ? current($stat) : null;
                 ?>
                 <label class="cat-chip <?= $isActive?'cat-active':'' ?>" for="group<?= $group['id'] ?>">
                     <input type="checkbox" name="problem_groups[]" value="<?= $group['id'] ?>" id="group<?= $group['id'] ?>" <?= $isActive?'checked':'' ?>>
                     <i class="fas fa-tag cc-icon"></i>
                     <span class="cc-label"><?= htmlspecialchars($group['category_name']) ?></span>
+                    <?php if ($stat): ?>
+                    <span style="font-size:.62rem;color:#64748b;background:#f1f5f9;border-radius:6px;padding:1px 6px;margin-right:4px;white-space:nowrap">
+                        <?= (int)$stat['ticket_count'] ?> تذاكر | <?= (int)$stat['task_count'] ?> مهام
+                    </span>
+                    <?php endif; ?>
                 </label>
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- ══ الخطوة 3: إحصائيات المهام ══ -->
-    <div class="section-card">
-        <div class="sc-head">
-            <h6><span class="step-badge">3</span><i class="fas fa-tasks"></i>إحصائيات المهام</h6>
-            <small style="color:#888;font-size:.78rem">عرض المهام حسب التصنيف والمستخدم</small>
-        </div>
-        <div class="sc-body">
-            <div class="row">
-                <!-- المهام حسب التصنيف -->
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <h6 style="font-size:.85rem;font-weight:700;color:#1a3a5c;margin-bottom:10px">
-                        <i class="fas fa-layer-group ml-1 text-primary"></i>المهام حسب التصنيف
-                    </h6>
-                    <div style="max-height:260px;overflow-y:auto">
-                        <table style="width:100%;font-size:.78rem;border-collapse:collapse">
-                            <thead>
-                                <tr style="border-bottom:2px solid #eee">
-                                    <th style="padding:6px 8px;text-align:right">التصنيف</th>
-                                    <th style="padding:6px 8px;text-align:center">تذاكر</th>
-                                    <th style="padding:6px 8px;text-align:center">مهام</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($groupTasks as $gt):
-                                    $isAssigned = in_array($gt['id'], $assigned_groups);
-                                ?>
-                                <tr style="border-bottom:1px solid #f0f2f5;<?= $isAssigned ? 'background:#f0f9ff' : '' ?>">
-                                    <td style="padding:6px 8px;text-align:right">
-                                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:<?= htmlspecialchars($gt['color'] ?? '#6c757d') ?>;margin-left:6px"></span>
-                                        <?= htmlspecialchars($gt['category_name']) ?>
-                                        <?php if ($isAssigned): ?>
-                                        <i class="fas fa-check-circle" style="color:#27ae60;font-size:.65rem;margin-right:4px" title="مسند للمستخدم"></i>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td style="padding:6px 8px;text-align:center;font-weight:700"><?= (int)$gt['ticket_count'] ?></td>
-                                    <td style="padding:6px 8px;text-align:center;font-weight:700"><?= (int)$gt['task_count'] ?></td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- المهام المسندة للمستخدم -->
-                <div class="col-md-6">
-                    <h6 style="font-size:.85rem;font-weight:700;color:#1a3a5c;margin-bottom:10px">
-                        <i class="fas fa-user-cog ml-1 text-success"></i>آخر المهام المسندة للمستخدم
-                        <span class="badge badge-info" style="font-size:.7rem"><?= count($userTasks) ?></span>
-                    </h6>
-                    <div style="max-height:260px;overflow-y:auto">
-                        <?php if (empty($userTasks)): ?>
-                        <p style="text-align:center;color:#bbb;padding:20px 0;font-size:.82rem">
-                            <i class="fas fa-inbox fa-2x d-block mb-2"></i>لا توجد مهام مسندة لهذا المستخدم
-                        </p>
-                        <?php else: ?>
-                        <?php foreach ($userTasks as $ut): ?>
-                        <div style="background:#f8fafc;border-radius:8px;padding:8px 12px;margin-bottom:6px;border:1px solid #e2e8f0">
-                            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-                                <span style="font-weight:700;font-size:.8rem;color:#1a3a5c;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-                                    <?= htmlspecialchars($ut['title']) ?>
-                                </span>
-                                <span style="font-size:.68rem;padding:2px 8px;border-radius:10px;font-weight:600;flex-shrink:0;
-                                    <?php
-                                    $st = $ut['status'];
-                                    if ($st === 'Completed') echo 'background:#d1fae5;color:#065f46';
-                                    elseif ($st === 'In Progress') echo 'background:#dbeafe;color:#1e40af';
-                                    elseif ($st === 'Cancelled') echo 'background:#fee2e2;color:#991b1b';
-                                    else echo 'background:#f1f5f9;color:#64748b';
-                                    ?>
-                                "><?= $st ?></span>
-                            </div>
-                            <div style="font-size:.7rem;color:#64748b;margin-top:4px">
-                                <i class="fas fa-tag ml-1" style="font-size:.65rem"></i><?= htmlspecialchars($ut['category_name'] ?? '—') ?>
-                                <?php if (!empty($ut['ticket_number'])): ?>
-                                <span class="mx-1">|</span>
-                                <i class="fas fa-hashtag ml-1" style="font-size:.65rem"></i><?= htmlspecialchars($ut['ticket_number']) ?>
-                                <?php endif; ?>
-                                <?php if (!empty($ut['branch_name'])): ?>
-                                <span class="mx-1">|</span>
-                                <i class="fas fa-building ml-1" style="font-size:.65rem"></i><?= htmlspecialchars($ut['branch_name']) ?>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+                <span style="font-size:.8rem;color:#1a3a5c;font-weight:600">
+                    <i class="fas fa-tasks ml-1 text-primary"></i>إجمالي المهام المسندة لهذا المستخدم:
+                    <strong style="font-size:1.1rem;color:#1a5276"><?= $userTaskCount ?></strong>
+                </span>
+                <?php if ($userTaskCount > 0): ?>
+                <a href="show-tasks.php?user_id=<?= $selected_user_id ?>" target="_blank" style="font-size:.75rem;color:#2980b9">
+                    <i class="fas fa-external-link-alt ml-1"></i>عرض المهام
+                </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <!-- ══ الخطوة 4: صلاحيات الصفحات ══ -->
+    <!-- ══ الخطوة 3: صلاحيات الصفحات ══ -->
     <div class="section-card">
         <div class="sc-head">
-            <h6><span class="step-badge">4</span><i class="fas fa-file-alt"></i>صلاحيات الصفحات التفصيلية</h6>
+            <h6><span class="step-badge">3</span><i class="fas fa-file-alt"></i>صلاحيات الصفحات التفصيلية</h6>
             <div style="display:flex;align-items:center;gap:10px">
                 <div id="searchWrapper"></div>
                 <?php if ($is_admin): ?>
@@ -633,7 +558,10 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
                                 'approve'=>['th-approve','fa-check','اعتماد','sw-approve'],
                                 'archive'=>['th-archive','fa-archive','أرشفة','sw-archive'],
                                 'view_archive'=>['th-varch','fa-folder-open','عرض الأرشيف','sw-varch'],
+                                'view_group_tasks'=>['th-vgt','fa-layer-group','مهام المجموعة','sw-vgt'],
+                                'view_own_tasks'=>['th-vot','fa-user-check','مهامي فقط','sw-vot'],
                             ];
+                            $task_perm_keys = ['view_group_tasks','view_own_tasks'];
                             foreach ($cols as $act => [$cls,$icon,$label,$sw]): ?>
                             <th class="<?= $cls ?>">
                                 <button type="button" class="toggle-col-btn" data-col="<?= $act ?>" title="تفعيل/تعطيل الكل">
@@ -669,7 +597,10 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
                             <?php foreach ($cols as $act => [$cls,$icon,$label,$sw]):
                                 $field = "can_" . $act;
                                 $isExtra = in_array($act, ['approve','archive','view_archive']);
+                                $isTaskPerm = in_array($act, $task_perm_keys);
                                 if (!$isDocPage && $isExtra) {
+                                    $checked = ''; $disabled = 'disabled';
+                                } elseif (!in_array($p_id, [$task_page_id]) && $isTaskPerm) {
                                     $checked = ''; $disabled = 'disabled';
                                 } elseif ($is_admin) {
                                     $checked = 'checked'; $disabled = 'disabled';

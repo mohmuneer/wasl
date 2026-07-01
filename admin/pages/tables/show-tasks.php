@@ -11,18 +11,36 @@ $menuStmt->execute([$page_path]);
 $current_page_id = $menuStmt->fetchColumn() ?? 0;
 
 $can_add = $can_edit = $can_delete = 0;
+$can_view_group_tasks = 0;
+$can_view_own_tasks   = 0;
 if ($current_page_id > 0) {
-    $accStmt = $pdo->prepare("SELECT can_add, can_edit, can_delete FROM user_menu_access WHERE user_id=? AND menu_id=?");
+    $accStmt = $pdo->prepare("SELECT can_add, can_edit, can_delete, can_view_group_tasks, can_view_own_tasks FROM user_menu_access WHERE user_id=? AND menu_id=?");
     $accStmt->execute([$current_user_id, $current_page_id]);
     $p = $accStmt->fetch(PDO::FETCH_ASSOC);
-    $can_add    = $p['can_add']    ?? 0;
-    $can_edit   = $p['can_edit']   ?? 0;
-    $can_delete = $p['can_delete'] ?? 0;
+    $can_add             = $p['can_add']             ?? 0;
+    $can_edit            = $p['can_edit']            ?? 0;
+    $can_delete          = $p['can_delete']          ?? 0;
+    $can_view_group_tasks = $p['can_view_group_tasks'] ?? 0;
+    $can_view_own_tasks   = $p['can_view_own_tasks']   ?? 0;
 }
 
-// ── فلتر: مهامي فقط / كل المهام ──
-$myTasksOnly = isset($_GET['my']) && $_GET['my'] === '1';
+// بناء شرط WHERE ديناميكي حسب صلاحيات عرض المهام
+$whereClauses = [];
+$params = [];
+if ($can_view_group_tasks) {
+    $whereClauses[] = "r.category_id IN (SELECT category_id FROM user_category_access WHERE user_id = ?)";
+    $params[] = $current_user_id;
+}
+if ($can_view_own_tasks) {
+    $whereClauses[] = "t.assigned_to = ?";
+    $params[] = $current_user_id;
+}
+// إذا لم تكن أي من الصلاحيتين مفعلة، لا يُعرض شيء
+if (empty($whereClauses)) {
+    $whereClauses[] = "1 = 0";
+}
 
+$whereSQL = implode(" AND ", $whereClauses);
 $sql = "SELECT t.*, r.details AS req_details,
                b.branch_name, g.category_name, u.full_name AS technician_name
         FROM work_orders t
@@ -30,11 +48,8 @@ $sql = "SELECT t.*, r.details AS req_details,
         LEFT JOIN branches b ON r.branch_id  = b.id
         LEFT JOIN issue_categories g ON r.category_id = g.id
         LEFT JOIN sys_users u ON t.assigned_to = u.id
-        WHERE r.category_id IN (SELECT category_id FROM user_category_access WHERE user_id = ?)
-        " . ($myTasksOnly ? "AND t.assigned_to = ?" : "") . "
+        WHERE $whereSQL
         ORDER BY t.created_at DESC";
-$params = [$current_user_id];
-if ($myTasksOnly) $params[] = $current_user_id;
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -207,11 +222,7 @@ body{direction:rtl;overflow-x:hidden;scrollbar-width:none;background:#f0f2f7}
         <!-- ── الجدول الرئيسي ── -->
         <div class="tasks-card">
             <div class="tasks-card-head">
-                    <h5><i class="fas fa-table ml-2 text-muted"></i>قائمة المهام
-                        <?php if ($myTasksOnly): ?>
-                        <span style="background:#dbeafe;color:#1d4ed8;font-size:.7rem;padding:2px 10px;border-radius:10px;margin-right:8px;font-weight:600"><i class="fas fa-user-check ml-1"></i>مهامي فقط</span>
-                        <?php endif; ?>
-                    </h5>
+                    <h5><i class="fas fa-table ml-2 text-muted"></i>قائمة المهام</h5>
                 <div class="d-flex gap-2" style="gap:8px">
                     <?php if ($can_add): ?>
                     <a href="../forms/add-task.php" class="btn btn-sm"
@@ -246,12 +257,6 @@ body{direction:rtl;overflow-x:hidden;scrollbar-width:none;background:#f0f2f7}
                     <option value="تم الإنجاز">✅ تم الإنجاز</option>
                     <option value="ملغي">❌ ملغي</option>
                 </select>
-                <div style="display:flex;align-items:center;gap:6px;margin-right:8px;padding:0 10px;border-right:1.5px solid #e2e8f0">
-                    <input type="checkbox" id="myTasksToggle" <?= $myTasksOnly ? 'checked' : '' ?> style="width:16px;height:16px;cursor:pointer">
-                    <label for="myTasksToggle" style="font-size:.78rem;font-weight:600;color:#1a5276;margin:0;cursor:pointer;user-select:none">
-                        <i class="fas fa-user-check ml-1"></i>مهامي فقط
-                    </label>
-                </div>
                 <button id="resetFilters" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;font-size:.78rem">
                     <i class="fas fa-undo ml-1"></i>إعادة
                 </button>
@@ -431,16 +436,6 @@ $(document).ready(function() {
     $('#fCategory, #fPriority, #fStatus').on('change', function() {
         $(this).toggleClass('active-filter', !!$(this).val());
         table.draw();
-    });
-    $('#myTasksToggle').on('change', function() {
-        var url = new URL(window.location.href);
-        if ($(this).is(':checked')) {
-            url.searchParams.set('my', '1');
-        } else {
-            url.searchParams.delete('my');
-        }
-        Swal.fire({ title:'جاري التحميل...', allowOutsideClick:false, didOpen:()=>{ Swal.showLoading(); } });
-        window.location.href = url.toString();
     });
     $('#resetFilters').on('click', function() {
         $('#fCategory, #fPriority, #fStatus').val('').removeClass('active-filter');
