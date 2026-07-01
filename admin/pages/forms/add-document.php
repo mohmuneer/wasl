@@ -48,12 +48,15 @@ $workflows = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_APPROVAL_WORKF
 // جلب مراحل كل سياسة مع بيانات الموظف
 $workflowEmployees = [];
 $stagesStmt = $pdo->query("
-    SELECT aps.workflow_id, aps.stage_order, aps.stage_name,
+    SELECT aps.workflow_id,
+           MIN(aps.stage_order) AS stage_order,
+           GROUP_CONCAT(aps.stage_name ORDER BY aps.stage_order SEPARATOR ' + ') AS stage_name,
            e.id AS emp_id, e.full_name, e.job_title, e.department, e.emp_code
     FROM " . TBL_APPROVAL_STAGES . " aps
     JOIN " . TBL_EMPLOYEES . " e ON e.id = aps.employee_id
     WHERE aps.is_active = 1
-    ORDER BY aps.workflow_id, aps.stage_order ASC
+    GROUP BY aps.workflow_id, e.id
+    ORDER BY aps.workflow_id, stage_order ASC
 ");
 foreach ($stagesStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $workflowEmployees[$row['workflow_id']][] = $row;
@@ -286,6 +289,8 @@ if (isset($_POST['add_document'])) {
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../dist/css/custom.css?v=202606261542">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap4-theme@1.0.0/dist/select2-bootstrap4.min.css" rel="stylesheet" />
     <style>
         :root {
             --primary:   var(--crm-primary, #1e4b8a);
@@ -688,6 +693,7 @@ if (isset($_POST['add_document'])) {
 
 <script src="../../plugins/jquery/jquery.min.js"></script>
 <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="../../dist/js/adminlte.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -769,6 +775,14 @@ document.getElementById('workflowSelect').addEventListener('change', function() 
         }
     });
     box.style.display = 'block';
+});
+
+// ── Select2 للبحث في القوائم ──────────────────────────────
+$('select.form-control').select2({
+    theme: 'bootstrap4',
+    language: isRtl ? 'ar' : 'en',
+    dir: isRtl ? 'rtl' : 'ltr',
+    width: '100%'
 });
 </script>
 </body>
