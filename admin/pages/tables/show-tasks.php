@@ -14,9 +14,18 @@ $can_add = $can_edit = $can_delete = 0;
 $can_view_group_tasks = 0;
 $can_view_own_tasks   = 0;
 if ($current_page_id > 0) {
-    $accStmt = $pdo->prepare("SELECT can_add, can_edit, can_delete, can_view_group_tasks, can_view_own_tasks FROM user_menu_access WHERE user_id=? AND menu_id=?");
-    $accStmt->execute([$current_user_id, $current_page_id]);
-    $p = $accStmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        $accStmt = $pdo->prepare("SELECT can_add, can_edit, can_delete, can_view_group_tasks, can_view_own_tasks FROM user_menu_access WHERE user_id=? AND menu_id=?");
+        $accStmt->execute([$current_user_id, $current_page_id]);
+        $p = $accStmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // الأعمدة الجديدة غير مضافة بعد
+        $accStmt = $pdo->prepare("SELECT can_add, can_edit, can_delete FROM user_menu_access WHERE user_id=? AND menu_id=?");
+        $accStmt->execute([$current_user_id, $current_page_id]);
+        $p = $accStmt->fetch(PDO::FETCH_ASSOC);
+        $p['can_view_group_tasks'] = 0;
+        $p['can_view_own_tasks']   = 0;
+    }
     $can_add             = $p['can_add']             ?? 0;
     $can_edit            = $p['can_edit']            ?? 0;
     $can_delete          = $p['can_delete']          ?? 0;
