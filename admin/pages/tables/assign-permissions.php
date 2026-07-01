@@ -413,6 +413,7 @@ body { direction:rtl; text-align:right; font-family:'Source Sans Pro',Arial,sans
 <section class="content">
 <div class="container-fluid">
 <form method="POST" id="permForm">
+<?= \Security::field() ?>
 
     <!-- ══ الخطوة 1: اختيار المستخدم والأدوار ══ -->
     <div class="section-card">
