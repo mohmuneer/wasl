@@ -74,7 +74,6 @@ if (isset($_GET['delete_id'])) {
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../dist/css/custom.css?v=202606261542">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap4.min.css">
     <style>
         .card-ticket {
             border: none;
@@ -195,39 +194,14 @@ if (isset($_GET['delete_id'])) {
 <script src="../../dist/js/adminlte.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.colVis.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 $(document).ready(function() {
     var table = $('#usersTable').DataTable({
-        dom: "<'row mb-3'<'col-md-6'B><'col-md-6 text-left'f>>" +
+        dom: "<'row mb-3'<'col-md-12'f>>" +
              "<'row'<'col-12'tr>>" +
              "<'row mt-3'<'col-md-5'i><'col-md-7'p>>",
-        buttons: [
-            {
-                extend: 'print',
-                text: '<i class="fas fa-print ml-1"></i> طباعة',
-                className: 'btn btn-outline-primary btn-sm ml-1',
-                exportOptions: { columns: ':visible' }
-            },
-            {
-                extend: 'excelHtml5',
-                text: '<i class="fas fa-file-excel ml-1"></i> Excel',
-                className: 'btn btn-outline-success btn-sm ml-1',
-                exportOptions: { columns: ':visible' }
-            },
-            {
-                extend: 'colvis',
-                text: '<i class="fas fa-columns ml-1"></i> أعمدة',
-                className: 'btn btn-outline-secondary btn-sm'
-            }
-        ],
         order: [[0, 'asc']],
         language: {
             search: 'بحث:',
