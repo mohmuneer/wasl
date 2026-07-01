@@ -1,8 +1,2 @@
 # تحديد مسار تخزين الجلسات يدوياً (المسار الافتراضي على InfinityFree غير قابل للكتابة لهذا الحساب)
 php_value session.save_path "/home/vol10_4/infinityfree.com/if0_42304233/htdocs/storage/sessions"
-
-# محاولة تجاوز CSP لإتاحة DataTables (قد لا تعمل على InfinityFree)
-<IfModule mod_headers.c>
-    Header always unset Content-Security-Policy
-    Header always set Content-Security-Policy "default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval'; style-src 'self' https: 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; object-src 'none'"
-</IfModule>
