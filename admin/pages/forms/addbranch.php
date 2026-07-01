@@ -322,8 +322,17 @@ $(document).ready(function() {
     // DataTable
     $('#branchTable').DataTable({
         language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json',
-            emptyTable: 'لا توجد فروع مسجلة حالياً'
+            emptyTable: 'لا توجد فروع مسجلة حالياً',
+            info: 'عرض _START_ إلى _END_ من أصل _TOTAL_ سجل',
+            infoEmpty: 'عرض 0 إلى 0 من أصل 0 سجل',
+            infoFiltered: '(منتقاة من _MAX_ سجل إجمالي)',
+            lengthMenu: 'عرض _MENU_ سجل في الصفحة',
+            loadingRecords: 'جارٍ التحميل...',
+            processing: 'جارٍ المعالجة...',
+            search: 'بحث:',
+            zeroRecords: 'لم يعثر على أية سجلات',
+            paginate: { first: 'الأول', last: 'الأخير', next: 'التالي', previous: 'السابق' },
+            aria: { sortAscending: ': تفعيل لترتيب العمود تصاعدياً', sortDescending: ': تفعيل لترتيب العمود تنازلياً' }
         },
         order: [[0,'asc']],
         columnDefs: [{ orderable:false, targets:[2] }],

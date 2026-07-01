@@ -432,7 +432,7 @@ $(document).ready(function() {
 
     // DataTable
     var dt = $('#deptTable').DataTable({
-        language: { url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/ar.json' },
+        language: { emptyTable:'لا توجد بيانات', info:'عرض _START_ إلى _END_ من أصل _TOTAL_ سجل', infoEmpty:'عرض 0 إلى 0 من أصل 0 سجل', infoFiltered:'(منتقاة من _MAX_ سجل إجمالي)', lengthMenu:'عرض _MENU_ سجل في الصفحة', loadingRecords:'جارٍ التحميل...', processing:'جارٍ المعالجة...', search:'بحث:', zeroRecords:'لم يعثر على أية سجلات', paginate:{ first:'الأول', last:'الأخير', next:'التالي', previous:'السابق' }, aria:{ sortAscending:': تفعيل لترتيب العمود تصاعدياً', sortDescending:': تفعيل لترتيب العمود تنازلياً' } },
         order: [[3,'asc'],[2,'asc'],[1,'asc']],
         columnDefs: [{ orderable:false, targets:[4] }],
         pageLength: 15
