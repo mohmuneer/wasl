@@ -111,8 +111,8 @@ try {
         ORDER BY d.updated_at DESC
     ")->fetchAll(PDO::FETCH_ASSOC);
 
-    $docTypes = $pdo->query("SELECT id, name FROM dms_document_types WHERE is_active = 1 ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
-    $docCategories = $pdo->query("SELECT id, name FROM dms_categories WHERE is_active = 1 ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+    $docTypes = $pdo->query("SELECT MIN(id) AS id, name FROM dms_document_types WHERE is_active = 1 GROUP BY name ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+    $docCategories = $pdo->query("SELECT MIN(id) AS id, name FROM dms_categories WHERE is_active = 1 GROUP BY name ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
     $departments = $pdo->query("SELECT DISTINCT department FROM dms_documents WHERE department IS NOT NULL AND department != '' ORDER BY department ASC")->fetchAll(PDO::FETCH_COLUMN);
 
     // GET filter params from archive-browser links

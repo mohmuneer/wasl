@@ -111,7 +111,7 @@ try {
     ")->fetchAll(PDO::FETCH_ASSOC);
 
     // Get distinct departments for filter
-    $dept_list = $pdo->query("SELECT id, department_name FROM " . TBL_DEPARTMENTS . " ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
+    $dept_list = $pdo->query("SELECT MIN(id) AS id, department_name FROM " . TBL_DEPARTMENTS . " GROUP BY department_name ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
 
     $users_list = $pdo->query("SELECT id, full_name, email FROM sys_users WHERE status = 'active' ORDER BY full_name")->fetchAll(PDO::FETCH_ASSOC);
 

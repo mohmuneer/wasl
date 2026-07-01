@@ -221,8 +221,8 @@ try {
     // البيانات تُجلب الآن في admin/api/documents_dt.php حسب الطلب
 
     // Populate filter dropdowns
-    $docTypes = $pdo->query("SELECT id, name FROM " . TBL_DOC_TYPES . " WHERE is_active = 1 ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
-    $docCategories = $pdo->query("SELECT id, name FROM " . TBL_DOC_CATEGORIES . " WHERE is_active = 1 ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+    $docTypes = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_DOC_TYPES . " WHERE is_active = 1 GROUP BY name ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+    $docCategories = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_DOC_CATEGORIES . " WHERE is_active = 1 GROUP BY name ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
     $departments = $pdo->query("SELECT DISTINCT department FROM " . TBL_DOCUMENTS . " WHERE department IS NOT NULL AND department != '' ORDER BY department ASC")->fetchAll(PDO::FETCH_COLUMN);
 
     // ظ…ط¹ظ„ظˆظ…ط§طھ ط§ظ„ظ…ظˆط¸ظپ ط§ظ„ظ…ط±طھط¨ط· ط¨ط§ظ„ظ…ط³طھط®ط¯ظ… ط§ظ„ط­ط§ظ„ظٹ (ظ„ظ„ط§ط¹طھظ…ط§ط¯)

@@ -174,7 +174,7 @@ if (isset($_POST['update_customer'])) {
                                         <div class="col-md-6 form-group">
                                             <label>القسم</label>
                                             <select name="lab_id" class="form-control">
-                                                <?php $labs = $pdo->query("SELECT id, department_name FROM departments")->fetchAll(PDO::FETCH_ASSOC); ?>
+                                                <?php $labs = $pdo->query("SELECT MIN(id) AS id, department_name FROM departments GROUP BY department_name")->fetchAll(PDO::FETCH_ASSOC); ?>
                                                 <?php foreach($labs as $l): ?>
                                                     <option value="<?= $l['id'] ?>" <?= ($customer['department_id'] == $l['id']) ? 'selected' : '' ?>>
                                                         <?= $l['department_name'] ?>

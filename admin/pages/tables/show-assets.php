@@ -42,7 +42,7 @@ if ($current_page_id > 0) {
 // ── جلب البيانات المساعدة ─────────────────────────────────────────
 $categories  = $pdo->query("SELECT * FROM " . TBL_ASSET_CATEGORIES . " WHERE is_active=1 ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 $branches    = $pdo->query("SELECT id, branch_name FROM branches ORDER BY branch_name")->fetchAll(PDO::FETCH_ASSOC);
-$departments = $pdo->query("SELECT id, department_name FROM departments ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
+$departments = $pdo->query("SELECT MIN(id) AS id, department_name FROM departments GROUP BY department_name ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
 $users_list  = $pdo->query("SELECT id, full_name, email FROM sys_users WHERE status='active' ORDER BY full_name")->fetchAll(PDO::FETCH_ASSOC);
 
 // ── معالجة الحذف ──────────────────────────────────────────────────

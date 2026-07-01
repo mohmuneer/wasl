@@ -47,10 +47,10 @@ if (!$doc) {
 }
 
 // ط¬ظ„ط¨ ط§ظ„ظ‚ظˆط§ط¦ظ…
-$doc_types = $pdo->query("SELECT id, name FROM " . TBL_DOC_TYPES . " WHERE is_active = 1 ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-$doc_categories = $pdo->query("SELECT id, name FROM " . TBL_DOC_CATEGORIES . " WHERE is_active = 1 ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-$departments = $pdo->query("SELECT d.id, d.department_name, r.region_name FROM departments d LEFT JOIN regions r ON d.region_id = r.id ORDER BY r.region_name, d.department_name")->fetchAll(PDO::FETCH_ASSOC);
-$approval_workflows = $pdo->query("SELECT id, name FROM " . TBL_APPROVAL_WORKFLOWS . " WHERE is_active = 1 ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$doc_types = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_DOC_TYPES . " WHERE is_active = 1 GROUP BY name ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$doc_categories = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_DOC_CATEGORIES . " WHERE is_active = 1 GROUP BY name ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$departments = $pdo->query("SELECT MIN(d.id) AS id, d.department_name, r.region_name FROM departments d LEFT JOIN regions r ON d.region_id = r.id GROUP BY d.department_name, r.region_name ORDER BY r.region_name, d.department_name")->fetchAll(PDO::FETCH_ASSOC);
+$approval_workflows = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_APPROVAL_WORKFLOWS . " WHERE is_active = 1 GROUP BY name ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
 // ظ…ط¹ط§ظ„ط¬ط© ط§ظ„طھط¹ط¯ظٹظ„
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_document'])) {

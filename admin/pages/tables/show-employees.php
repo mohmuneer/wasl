@@ -184,7 +184,7 @@ try {
     }
 
     // ── جلب البيانات المشتركة ─────────────────────────────────────────
-    $orgDepts = $pdo->query("SELECT id, department_name FROM departments ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
+    $orgDepts = $pdo->query("SELECT MIN(id) AS id, department_name FROM departments GROUP BY department_name ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
     $allPositions = $pdo->query("SELECT department_id, job_title FROM " . TBL_JOB_POSITIONS . " WHERE is_active=1 AND job_title!='' ORDER BY job_title")->fetchAll(PDO::FETCH_ASSOC);
     $positionsByDept = [];
     foreach ($allPositions as $p) {

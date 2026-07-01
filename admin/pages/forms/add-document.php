@@ -34,16 +34,16 @@ if ($current_page_id > 0) {
     $can_add = $permissions['can_add'] ?? 0;
 }
 
-// ط¬ظ„ط¨ ط£ظ†ظˆط§ط¹ ط§ظ„ظˆط«ط§ط¦ظ‚
-$types_query = $pdo->query("SELECT id, name FROM " . TBL_DOC_TYPES . " WHERE is_active = 1 ORDER BY name");
+// جلب أنواع الوثائق (مع GROUP BY لمنع التكرار)
+$types_query = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_DOC_TYPES . " WHERE is_active = 1 GROUP BY name ORDER BY name");
 $doc_types = $types_query->fetchAll(PDO::FETCH_ASSOC);
 
-// ط¬ظ„ط¨ ط§ظ„طھطµظ†ظٹظپط§طھ
-$categories_query = $pdo->query("SELECT id, name FROM " . TBL_DOC_CATEGORIES . " WHERE is_active = 1 ORDER BY name");
+// جلب التصنيفات (مع GROUP BY لمنع التكرار)
+$categories_query = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_DOC_CATEGORIES . " WHERE is_active = 1 GROUP BY name ORDER BY name");
 $categories = $categories_query->fetchAll(PDO::FETCH_ASSOC);
 
-// جلب سياسات الاعتماد مع موظفيها
-$workflows = $pdo->query("SELECT id, name FROM " . TBL_APPROVAL_WORKFLOWS . " WHERE is_active = 1 ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+// جلب سياسات الاعتماد (مع GROUP BY لمنع التكرار)
+$workflows = $pdo->query("SELECT MIN(id) AS id, name FROM " . TBL_APPROVAL_WORKFLOWS . " WHERE is_active = 1 GROUP BY name ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
 // جلب مراحل كل سياسة مع بيانات الموظف
 $workflowEmployees = [];
@@ -59,8 +59,8 @@ foreach ($stagesStmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $workflowEmployees[$row['workflow_id']][] = $row;
 }
 
-// جلب الأقسام
-$departments_list = $pdo->query("SELECT id, department_name FROM departments ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
+// جلب الأقسام (مع GROUP BY لمنع التكرار)
+$departments_list = $pdo->query("SELECT MIN(id) AS id, department_name FROM departments GROUP BY department_name ORDER BY department_name")->fetchAll(PDO::FETCH_ASSOC);
 
 if (isset($_POST['add_document'])) {
     $doc_number   = trim($_POST['doc_number'] ?? '');

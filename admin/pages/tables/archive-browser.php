@@ -55,7 +55,7 @@ try {
     $years = array_keys($tree);
 
     // ── أنواع الوثائق ──────────────────────────────────────────────────
-    $docTypes = $pdo->query("SELECT id, name FROM dms_document_types WHERE is_active=1 ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+    $docTypes = $pdo->query("SELECT MIN(id) AS id, name FROM dms_document_types WHERE is_active=1 GROUP BY name ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
     // ── أحدث الوثائق ──────────────────────────────────────────────────
     $recentDocs = array_slice($allDocs, 0, 6);
