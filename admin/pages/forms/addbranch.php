@@ -5,6 +5,13 @@ require __DIR__ . "/../../../config/db.php";
 $current_user_id = $_SESSION['user_id'] ?? null;
 $page_path       = "pages/forms/addbranch.php";
 
+// التحقق من فشل CSRF (يُسجل في validatePost بدلاً من الموت)
+$csrfFailed = !empty($_SESSION['_csrf_failed']);
+unset($_SESSION['_csrf_failed']);
+if ($csrfFailed) {
+    $flash = ['type'=>'error', 'msg'=>'انتهت صلاحية النموذج، يرجى إعادة المحاولة.'];
+}
+
 if (!$current_user_id) die("خطأ: يجب تسجيل الدخول أولاً");
 
 // ── صلاحيات ─────────────────────────────────────────────────────

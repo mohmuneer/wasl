@@ -65,6 +65,22 @@ class Security
         // تحقق مزدوج: POST body + referer
         $token = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
         if (!$token || !hash_equals(self::token(), $token)) {
+            // تسجيل الخطأ للسجلات
+            $log = sprintf("[CSRF] %s | SCRIPT=%s | TOKEN=%s | SESSION=%s | POST=%s\n",
+                date('Y-m-d H:i:s'),
+                $script,
+                substr($token ?: 'NONE', 0, 16) . '...',
+                substr(self::token() ?: 'NONE', 0, 16) . '...',
+                json_encode(array_keys($_POST))
+            );
+            @file_put_contents(dirname(__DIR__) . '/storage/logs/csrf_error.log', $log, FILE_APPEND);
+
+            // التحقق الإضافي: POST يفشل بصمت ونعرض رسالة خطأ في الفلاش بدلاً من القتل
+            if ($script === 'addbranch.php') {
+                $_SESSION['_csrf_failed'] = true;
+                return;
+            }
+
             http_response_code(419);
             // AJAX requests — أرجع JSON
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
